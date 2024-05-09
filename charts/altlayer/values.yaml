@@ -76,6 +76,8 @@ ingress:
 # CONTAINER VALUES
 # CONTAINER - NODE
 node:
+  args:
+    - --config=/app/config/operator.yaml
   image:
     repository: public.ecr.aws/altlayer/mach-operator
     pullPolicy: IfNotPresent
