@@ -1,0 +1,23 @@
+
+{{- if .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "mach-operator.fullname" . }}-servicemonitor
+  labels:
+    {{- include "mach-operator.labels" . | nindent 4 }}
+    {{- toYaml .Values.serviceMonitor.labels | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "mach-operator.selectorLabels" . | nindent 6 }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  endpoints:
+  {{- range .Values.serviceMonitor.ports }}
+    - port: {{ .name }}
+      interval: {{ $.Values.serviceMonitor.interval }}
+      path: {{ .path }}
+  {{- end }}
+{{- end }}

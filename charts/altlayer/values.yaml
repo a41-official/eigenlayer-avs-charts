@@ -38,6 +38,22 @@ service:
       protocol: TCP
       targetPort: 9094
 
+# SERVICE MONITOR
+serviceMonitor:
+  enabled: true
+  labels:
+    release: prometheus
+  interval: 30s
+  ports:
+    - name: eigen-metrics
+      port: 9090
+      targetPort: 9092
+      path: /metrics
+    - name: verify-metrics
+      port: 9094
+      targetPort: 9094
+      path: /metrics
+
 # ports:
 #   - containerPort: 9010
 #     protocol: TCP
