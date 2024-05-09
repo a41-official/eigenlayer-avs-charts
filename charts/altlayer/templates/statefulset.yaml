@@ -76,7 +76,7 @@ spec:
               mountPath: /app/operator_keys
               readOnly: true
               secret:
-                  secretName: {{ .Values.secrets.bls-key }}
+                  secretName: {{ .Values.secrets.blsKey }}
                   items:
                   - key: bls-key.json
                     path: bls_key.json
@@ -84,7 +84,7 @@ spec:
             - name: OPERATOR_BLS_KEY_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secrets.bls-key-password }}
+                  name: {{ .Values.secrets.blsKeyPassword }}
                   key: blsKeyPassword
         - name: verifier
           {{- with .Values.verifier.args }}

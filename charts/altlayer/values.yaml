@@ -254,5 +254,5 @@ secrets:
   # if false, use existing secret
   create: true
   # secret name
-  bls-key: "MY-BLS-KEY-SECRET"
-  bls-key-password: "MY-BLS-KEY-PASSWORD-SECRET"
+  blsKey: "MY-BLS-KEY-SECRET"
+  blsKeyPassword: "MY-BLS-KEY-PASSWORD-SECRET"
