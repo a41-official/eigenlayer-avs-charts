@@ -49,3 +49,16 @@ Selector labels
 app.kubernetes.io/name: {{ include "mach-operator.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Create the service account name for the mach-operator chart.
+If a service account name is provided in the values and it is not an empty string, use that name.
+Otherwise, use the full name template with a '-sa' suffix.
+*/}}
+{{- define "mach-operator.serviceAccountName" -}}
+{{- if and .Values.serviceAccount.name (ne (trim .Values.serviceAccount.name) "") }}
+{{- .Values.serviceAccount.name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-sa" (include "mach-operator.fullname" . | trunc 63) | trimSuffix "-" }}
+{{- end }}
+{{- end }}

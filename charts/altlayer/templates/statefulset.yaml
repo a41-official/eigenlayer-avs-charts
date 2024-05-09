@@ -45,10 +45,6 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: node
-          {{- with .Values.node.args }}
-          args:
-          {{- toYaml . | nindent 12 }}
-          {{- end }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.node.image.repository }}:{{ .Values.node.image.tag | default .Chart.AppVersion }}"
@@ -74,20 +70,21 @@ spec:
           resources:
             {{- toYaml .Values.node.resources | nindent 12 }}
           volumeMounts:
-            - name: bls-key
-              mountPath: /app/operator_keys/bls_key.json
-              subPath: bls_key.json
-              readOnly: true
-            - name: config
-              mountPath: /app/config/operator.yaml
-              subPath: operator.yaml
             - name: data
               mountPath: /data
+            - name: bls-key
+              mountPath: /app/operator_keys
+              readOnly: true
+              secret:
+                  secretName: {{ .Values.secrets.bls-key }}
+                  items:
+                  - key: bls-key.json
+                    path: bls_key.json
           env:
             - name: OPERATOR_BLS_KEY_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "mach-operator.secretsName" . }}
+                  name: {{ .Values.secrets.bls-key-password }}
                   key: blsKeyPassword
         - name: verifier
           {{- with .Values.verifier.args }}
@@ -133,9 +130,6 @@ spec:
         - name: config
           configMap:
             name: {{ include "mach-operator.fullname" . }}-config
-        - name: bls-key
-        secret:
-          secretName: {{ include "mach-operator.secretsName" . }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
