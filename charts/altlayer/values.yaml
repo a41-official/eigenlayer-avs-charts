@@ -16,8 +16,9 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 podAnnotations: {}
-podSecurityContext: ""
-securityContext: ""
+podSecurityContext: {}
+securityContext: {}
+storageClassName: ""
 
 # SERVICE
 service:
@@ -32,7 +33,7 @@ service:
       port: 9090
       protocol: TCP
       targetPort: 9092
-    - name: verifier-metrics
+    - name: verify-metrics
       port: 9094
       protocol: TCP
       targetPort: 9094
@@ -81,16 +82,15 @@ node:
     tag: "latest"
   resources:
     limits:
-      cpu: 4
-      memory: 4Gi
+      cpu: 800m
+      memory: 2Gi
     requests:
-      cpu: 2
-      memory: 4Gi
+      cpu: 800m
+      memory: 2Gi
   ports:
     - name: eigen-metrics
-      port: 9092
+      containerPort: 9092
       protocol: TCP
-      targetPort: 9092
   env:
     - name: OPERATOR_BLS_KEY_PASSWORD
       value: "" ## DONT PUT PASSWORK HERE! SHOULE BE REFERRED FROM SECRET
@@ -98,7 +98,7 @@ node:
   readinessProbe:
     httpGet:
       path: /metrics
-      port: 9090
+      port: 9092
     initialDelaySeconds: 30
     periodSeconds: 10
     timeoutSeconds: 3
@@ -107,7 +107,7 @@ node:
   livenessProbe:
     httpGet:
       path: /metrics
-      port: 9090
+      port: 9092
     initialDelaySeconds: 1200
     periodSeconds: 30
     timeoutSeconds: 3
@@ -119,20 +119,19 @@ node:
 verifier:
   resources:
     limits:
-      cpu: 4
-      memory: 4Gi
+      cpu: 500m
+      memory: 2Gi
     requests:
-      cpu: 2
-      memory: 4Gi
+      cpu: 500m
+      memory: 2Gi
   image:
     repository: public.ecr.aws/altlayer/mach
     pullPolicy: IfNotPresent
     tag: "latest"
   ports:
-    - name: verifier-metrics
-      port: 9094
+    - name: verify-metrics
+      containerPort: 9094
       protocol: TCP
-      targetPort: 9094
   args:
     - --config=/app/mach-config.toml
     - --genesis-config=/app/genesis.json
@@ -235,7 +234,7 @@ configs:
     ##############################################
     [fetcher]
     # The JSONRPC endpoint of Optimism node
-    url = "https://rpc.ankr.com/optimism_sepolia/f3b984c11100438aa3242e00b42f8022dfa03bd3163a5f7f394b4e3aa11734d0"
+    url = "public-endpoint"
     # The interval (milliseconds) for fetching finalized/latest block of Optimism node
     # Optional, default value: 1000ms
     interval_ms = 4000
@@ -249,10 +248,64 @@ configs:
     # Optional, default value: 100ms
     verify_timeout_ms = 100
 
+    ##############################################
+    # Mach prometheus configuration              #
+    ##############################################
+    [prometheus]
+    # The TCP port of Prometheus exporter
+    # Optional, default value: 9094
+    port = 9094
+    # The HTTP URI path for fetching Prometheus metrics
+    # Optional, default value: "/metrics"
+    metrics_path = "/metrics"
+    # The indication if expose Prometheus exporter on all interfaces
+    # true: listen address = "0.0.0.0:port"
+    # false: listen address = "127.0.0.1:port"
+    # Optional, default value: false
+    external = true
+  operator.yaml: |
+    # this sets the logger level (true = info, false = debug)
+    production: true
+
+    # ETH RPC URL
+    eth_rpc_url: "TODO"
+    eth_ws_url: "TODO"
+
+    # If you running this using eigenlayer CLI and the provided AVS packaging structure,
+    # this should be /operator_keys/bls_key.json as the host path will be asked while running
+    #
+    # We are using bn254 curve for bls keys
+    #
+    # If you are running locally using go run main.go, this should be full path to your local bls key file
+    bls_private_key_store_path: /app/operator_keys/bls_key.json
+    ecdsa_private_key_store_path: /app/operator_keys/ecdsa_key.json
+
+    operator_ecdsa_address: 
+
+    # aggregator_server_ip_port_address: https://op-sepolia-aggregator-1.alt.technology
+    aggregator_jsonrpc_server_ip_port_address: https://op-sepolia-aggregator-1.alt.technology
+
+    # avs node spec compliance https://eigen.nethermind.io/docs/spec/intro
+    eigen_metrics_ip_port_address: 0.0.0.0:9092
+    enable_metrics: true
+    node_api_ip_port_address: 0.0.0.0:9091
+    enable_node_api: true
+
+    # EigenLayer Slasher contract address
+
+    # This is the address of the slasher which is deployed in the anvil saved state
+    avs_registry_coordinator_address: 0x1eA7D160d325B289bF981e0D7aB6Bf3261a0FFf2
+    operator_state_retriever_address: 0xBE1c904525910fdB49dB33b4960DF9aC9f603dC7
+
+    operator_server_ip_port_addr: ""
+
+    # the layer1 chain id the avs contracts in
+    layer1_chain_id: 17000
+
+    # the layer2 chain id
+    layer2_chain_id: 11155420
+
 # SECRETS
 secrets:
-  # if false, use existing secret
-  create: true
-  # secret name
-  blsKey: "MY-BLS-KEY-SECRET"
-  blsKeyPassword: "MY-BLS-KEY-PASSWORD-SECRET"
+  blsKey: ""
+  blsKeyPassword: ""

@@ -4,10 +4,11 @@ metadata:
   name: {{ include "mach-operator.fullname" . }}
   labels:
     {{- include "mach-operator.labels" . | nindent 4 }}
-      {{- with .Values.labels }}
-      {{- toYaml . | nindent 4 }}
-      {{- end}}
+    {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end}}
 spec:
+  serviceName: {{ include "mach-operator.fullname" . }}
   replicas: 1
   volumeClaimTemplates:
     - metadata:
@@ -17,12 +18,13 @@ spec:
         resources:
           requests:
             storage: 500Mi
+        storageClassName: {{ .Values.storageClassName }}
   selector:
     matchLabels:
       {{- include "mach-operator.selectorLabels" . | nindent 6 }}
-        {{- with .Values.labels }}
-        {{- toYaml . | nindent 6 }}
-        {{- end}}
+      {{- with .Values.labels }}
+      {{- toYaml . | nindent 6 }}
+      {{- end}}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -45,6 +47,10 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: node
+          {{- with .Values.node.args }}
+          args:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.node.image.repository }}:{{ .Values.node.image.tag | default .Chart.AppVersion }}"
@@ -73,13 +79,12 @@ spec:
             - name: data
               mountPath: /data
             - name: bls-key
-              mountPath: /app/operator_keys
+              mountPath: /app/operator_keys/bls_key.json
+              subPath: bls_key.json
               readOnly: true
-              secret:
-                  secretName: {{ .Values.secrets.blsKey }}
-                  items:
-                  - key: bls-key.json
-                    path: bls_key.json
+            - name: config
+              mountPath: /app/config/operator.yaml
+              subPath: operator.yaml
           env:
             - name: OPERATOR_BLS_KEY_PASSWORD
               valueFrom:
@@ -127,6 +132,9 @@ spec:
           env:
             {{- toYaml .Values.verifier.env | nindent 12 }}
       volumes:
+        - name: bls-key
+          secret:
+            secretName: {{ .Values.secrets.blsKey }}
         - name: config
           configMap:
             name: {{ include "mach-operator.fullname" . }}-config

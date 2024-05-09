@@ -22,6 +22,25 @@ AltLayer Mach AVS is a fast finality layer for Ethereum rollups. In Mach AVS , o
 ## Secrets
 - bls_key.json
 - blsKeyPassword
+```
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "MACH-BLS-KEY-JSON"
+  labels: {}
+stringData:
+  bls_key.json: |
+    {}
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "MACH-BLS-KEY-PASSWORD-JSON"
+  labels: {}
+stringData:
+  blsKeyPassword: ""
+```
 
 ## ConfigMap
 - [genesis.json](https://github.com/alt-research/mach-avs-operator-setup/tree/master)
