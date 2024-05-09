@@ -16,7 +16,7 @@ AltLayer Mach AVS is a fast finality layer for Ethereum rollups. In Mach AVS , o
 
 ### Internal Cluster Ports
 - node api: `9010`
-- eigen metrics: `9090`
+- eigen metrics: `9092`
 - verifier metrics: `9094`
 
 ## Secrets
