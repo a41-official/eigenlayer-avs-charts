@@ -150,6 +150,7 @@ verifier:
     - name: verify-metrics
       containerPort: 9094
       protocol: TCP
+  command:
   args:
     - --config=/app/mach-config.toml
     - --genesis-config=/app/genesis.json

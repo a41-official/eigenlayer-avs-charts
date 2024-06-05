@@ -92,6 +92,10 @@ spec:
                   name: {{ .Values.secrets.blsKeyPassword }}
                   key: blsKeyPassword
         - name: verifier
+          {{- with .Values.verifier.command }}
+          command:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- with .Values.verifier.args }}
           args:
           {{- toYaml . | nindent 12 }}
