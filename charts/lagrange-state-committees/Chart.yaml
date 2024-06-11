@@ -1,0 +1,5 @@
+apiVersion: v2
+name: lagrange-state-committees
+description: A Helm chart for Lagrange State Committees Node
+version: 0.1.0
+appVersion: "1.0"

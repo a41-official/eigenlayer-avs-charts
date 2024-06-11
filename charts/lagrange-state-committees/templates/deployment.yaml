@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "lagrange-state-committees.fullname" . }}
+  labels:
+    {{ include "lagrange-state-committees.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "lagrange-state-committees.name" . }}
+  template:
+    metadata:
+      labels:
+        {{ include "lagrange-state-committees.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: lagrange-state-committees
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.prometheusPort }}
+        volumeMounts:
+        - name: client-config
+          mountPath: /app/config/client.toml
+          subPath: client.toml
+        - name: bls-keystore
+          mountPath: /app/config/keystore/bls.key
+          subPath: bls.key
+        - name: bls-keystore-pass
+          mountPath: /app/config/keystore/bls.pass
+          subPath: bls.pass
+        - name: signer-keystore
+          mountPath: /app/config/keystore/signer.key
+          subPath: signer.key
+        - name: signer-keystore-pass
+          mountPath: /app/config/keystore/signer.pass
+          subPath: signer.pass
+        env:
+        - name: NETWORK
+          value: "{{ .Values.env.Network }}"
+        - name: CHAIN_NAME
+          value: "{{ .Values.env.ChainName }}"
+        - name: VERSION
+          value: "{{ .Values.env.Version }}"
+        - name: PROMETHEUS_PORT
+          value: "{{ .Values.env.PrometheusPort }}"
+        - name: CLIENT_CONFIG_FILE_PATH
+          value: "{{ .Values.env.ClientConfigFilePath }}"
+        - name: BLS_KEYSTORE_PATH
+          value: "{{ .Values.env.BLSKeystorePath }}"
+        - name: BLS_KEYSTORE_PASSWORD_PATH
+          value: "{{ .Values.env.BLSKeystorePasswordPath }}"
+        - name: SIGNER_KEYSTORE_PATH
+          value: "{{ .Values.env.SignerECDSAKeystorePath }}"
+        - name: SIGNER_KEYSTORE_PASSWORD_PATH
+          value: "{{ .Values.env.SignerECDSAKeystorePasswordPath }}"
+        - name: SERVER_GRPC_URL
+          value: "{{ .Values.env.ServerGrpcURL }}"
+        - name: ETHEREUM_RPC_URL
+          value: "{{ .Values.env.EthereumRPCURL }}"
+        - name: OPERATOR_ADDRESS
+          value: "{{ .Values.env.OperatorAddress }}"
+        - name: COMMITTEE_SC_ADDRESS
+          value: "{{ .Values.env.CommitteeSCAddress }}"
+        - name: L2_RPC_ENDPOINT
+          value: "{{ .Values.env.L2RPCEndpoint }}"
+        - name: L1_RPC_ENDPOINT
+          value: "{{ .Values.env.L1RPCEndpoint }}"
+        - name: BEACON_URL
+          value: "{{ .Values.env.BeaconURL }}"
+        - name: BATCH_INBOX
+          value: "{{ .Values.env.BatchInbox }}"
+        - name: BATCH_SENDER
+          value: "{{ .Values.env.BatchSender }}"
+        command: ["/bin/sh", "-c", "/app/lagrange-node run-client -c /app/config/client.toml"]
+      volumes:
+      - name: client-config
+        configMap:
+          name: client-config
+      - name: bls-keystore
+        secret:
+          secretName: bls-keystore
+      - name: bls-keystore-pass
+        secret:
+          secretName: bls-keystore-pass
+      - name: signer-keystore
+        secret:
+          secretName: signer-keystore
+      - name: signer-keystore-pass
+        secret:
+          secretName: signer-keystore-pass
