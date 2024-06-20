@@ -14,6 +14,7 @@ spec:
       labels:
         {{ include "lagrange-state-committees.selectorLabels" . | nindent 8 }}
     spec:
+      serviceAccountName: {{ include "lagrange-state-committees.serviceAccountName" . }}
       containers:
       - name: lagrange-state-committees
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -44,16 +45,6 @@ spec:
           value: "{{ .Values.env.Version }}"
         - name: PROMETHEUS_PORT
           value: "{{ .Values.env.PrometheusPort }}"
-        - name: CLIENT_CONFIG_FILE_PATH
-          value: "{{ .Values.env.ClientConfigFilePath }}"
-        - name: BLS_KEYSTORE_PATH
-          value: "{{ .Values.env.BLSKeystorePath }}"
-        - name: BLS_KEYSTORE_PASSWORD_PATH
-          value: "{{ .Values.env.BLSKeystorePasswordPath }}"
-        - name: SIGNER_KEYSTORE_PATH
-          value: "{{ .Values.env.SignerECDSAKeystorePath }}"
-        - name: SIGNER_KEYSTORE_PASSWORD_PATH
-          value: "{{ .Values.env.SignerECDSAKeystorePasswordPath }}"
         - name: SERVER_GRPC_URL
           value: "{{ .Values.env.ServerGrpcURL }}"
         - name: ETHEREUM_RPC_URL
@@ -79,13 +70,13 @@ spec:
           name: client-config
       - name: bls-keystore
         secret:
-          secretName: bls-keystore
+          secretName: {{ .Values.secrets.blsKey }}
       - name: bls-keystore-pass
         secret:
-          secretName: bls-keystore-pass
+          secretName: {{ .Values.secrets.blsKeyPassword }}
       - name: signer-keystore
         secret:
-          secretName: signer-keystore
+          secretName: {{ .Values.secrets.ecdsaKey }}
       - name: signer-keystore-pass
         secret:
-          secretName: signer-keystore-pass
+          secretName: {{ .Values.secrets.ecdsaKeyPassword }}

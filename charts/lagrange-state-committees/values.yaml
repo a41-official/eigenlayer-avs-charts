@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: lagrangelabs/lagrange-node
   pullPolicy: IfNotPresent
-  tag: "{{ .Values.version }}"
+  tag: "latest"
 
 service:
   type: ClusterIP
@@ -11,7 +11,13 @@ service:
 
 prometheusPort: 8080
 
-resources: {}
+resources:
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
 
 nodeSelector: {}
 
@@ -28,11 +34,6 @@ env:
   ChainName: "ethereum"
   Version: "latest"
   PrometheusPort: "8080"
-  ClientConfigFilePath: "/path/to/client.toml"
-  BLSKeystorePath: "/path/to/bls.key"
-  BLSKeystorePasswordPath: "/path/to/bls.pass"
-  SignerECDSAKeystorePath: "/path/to/signer.key"
-  SignerECDSAKeystorePasswordPath: "/path/to/signer.pass"
   ServerGrpcURL: "grpc.server.url"
   EthereumRPCURL: "https://mainnet.infura.io/v3/YOUR-PROJECT-ID"
   OperatorAddress: "0xYourOperatorAddress"
@@ -42,3 +43,9 @@ env:
   BeaconURL: "https://beacon.url"
   BatchInbox: "0xBatchInboxAddress"
   BatchSender: "0xBatchSenderAddress"
+
+secrets:
+  blsKey: "mainnet-bls-key"
+  blsKeyPassword: "mainnet-bls-key-password"
+  ecdsaKey: "mainnet-ecdsa-key"
+  ecdsaKeyPassword: "mainnet-ecdsa-key-password"

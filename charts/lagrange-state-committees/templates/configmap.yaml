@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: client-config
+data:
+  client.toml: |
+    [Client]
+    GrpcURLs = "{{ .Values.env.ServerGrpcURL }}:9090"
+    Chain = "{{ .Values.env.ChainName }}"
+    EthereumURL = "{{ .Values.env.EthereumRPCURL }}"
+    OperatorAddress = "{{ .Values.env.OperatorAddress }}"
+    CommitteeSCAddress = "{{ .Values.env.CommitteeSCAddress }}"
+    BLSKeystorePath = "/app/config/keystore/bls.key"
+    BLSKeystorePasswordPath = "/app/config/keystore/bls.pass"
+    SignerECDSAKeystorePath = "/app/config/keystore/signer.key"
+    SignerECDSAKeystorePasswordPath = "/app/config/keystore/signer.pass"
+    PullInterval = "1000ms"
+    BLSCurve = "BN254"
+
+    [RpcClient]
+    {{- $chainName := lower .Values.env.ChainName }}
+    {{- if or (eq $chainName "optimism") (eq $chainName "base") }}
+    [RpcClient.Optimism]
+    RPCURL = "{{ .Values.env.L2RPCEndpoint }}"
+    L1RPCURL = "{{ .Values.env.L1RPCEndpoint }}"
+    BeaconURL = "{{ .Values.env.BeaconURL }}"
+    BatchInbox = "{{ .Values.env.BatchInbox }}"
+    BatchSender = "{{ .Values.env.BatchSender }}"
+    ConcurrentFetchers = 8
+    {{- else if eq $chainName "arbitrum" }}
+    [RpcClient.Arbitrum]
+    RPCURL = "{{ .Values.env.L2RPCEndpoint }}"
+    L1RPCURL = "{{ .Values.env.L1RPCEndpoint }}"
+    BeaconURL = "{{ .Values.env.BeaconURL }}"
+    BatchInbox = "{{ .Values.env.BatchInbox }}"
+    ConcurrentFetchers = 8
+    {{- end }}
+
+    [Telemetry]
+    ServiceName = "lagrange-node"
+    PrometheusRetentionTime = "60s"
