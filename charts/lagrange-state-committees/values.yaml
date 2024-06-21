@@ -1,13 +1,21 @@
 replicaCount: 1
+labels: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+service:
+  type: ClusterIP
+  port: 8080
+
+serviceAccount:
+  create: true
+  name: ""
 
 image:
   repository: lagrangelabs/lagrange-node
   pullPolicy: IfNotPresent
   tag: "latest"
-
-service:
-  type: ClusterIP
-  port: 8080
 
 prometheusPort: 8080
 
@@ -19,33 +27,47 @@ resources:
     cpu: 500m
     memory: 1Gi
 
-nodeSelector: {}
+clientConfig: |
+  [Client]
+  GrpcURLs = "grpc.server.url:9090"
+  Chain = "ethereum"
+  EthereumURL = "https://mainnet.infura.io/v3/YOUR-PROJECT-ID"
+  OperatorAddress = "0xYourOperatorAddress"
+  CommitteeSCAddress = "0xYourCommitteeSCAddress"
+  BLSKeystorePath = "/app/config/keystore/bls.key"
+  BLSKeystorePasswordPath = "/app/config/keystore/bls.pass"
+  SignerECDSAKeystorePath = "/app/config/keystore/signer.key"
+  SignerECDSAKeystorePasswordPath = "/app/config/keystore/signer.pass"
+  PullInterval = "1000ms"
+  BLSCurve = "BN254"
 
-tolerations: []
+  [RpcClient]
+  [RpcClient.Optimism]
+  RPCURL = "https://l2.rpc.endpoint"
+  L1RPCURL = "https://l1.rpc.endpoint"
+  BeaconURL = "https://beacon.url"
+  BatchInbox = "0xBatchInboxAddress"
+  BatchSender = "0xBatchSenderAddress"
+  ConcurrentFetchers = 8
+  {{- else if eq (lower .Values.env.ChainName) "arbitrum" }}
+  [RpcClient.Arbitrum]
+  RPCURL = "https://l2.rpc.endpoint"
+  L1RPCURL = "https://l1.rpc.endpoint"
+  BeaconURL = "https://beacon.url"
+  BatchInbox = "0xBatchInboxAddress"
+  ConcurrentFetchers = 8
+  {{- end }}
 
-affinity: {}
+  [Telemetry]
+  ServiceName = "lagrange-node"
+  PrometheusRetentionTime = "60s"
 
-serviceAccount:
-  create: true
-  name: ""
 
-env:
-  Network: "mainnet"
-  ChainName: "ethereum"
-  Version: "latest"
-  PrometheusPort: "8080"
-  ServerGrpcURL: "grpc.server.url"
-  EthereumRPCURL: "https://mainnet.infura.io/v3/YOUR-PROJECT-ID"
-  OperatorAddress: "0xYourOperatorAddress"
-  CommitteeSCAddress: "0xYourCommitteeSCAddress"
-  L2RPCEndpoint: "https://l2.rpc.endpoint"
-  L1RPCEndpoint: "https://l1.rpc.endpoint"
-  BeaconURL: "https://beacon.url"
-  BatchInbox: "0xBatchInboxAddress"
-  BatchSender: "0xBatchSenderAddress"
-
+# blsKey: generated BLS key only for lagarange network. You could subscribe multiple L2 networks via 1 key.
+# signerKey: generated ECDSA key only for lagarange network. Enusure that it is different from the EIGEN operator ECDSA
+# password: e.g., {"pukey":"this-is-public-key","prkey":"this-is-private-key"}
 secrets:
   blsKey: "mainnet-bls-key"
   blsKeyPassword: "mainnet-bls-key-password"
-  ecdsaKey: "mainnet-ecdsa-key"
-  ecdsaKeyPassword: "mainnet-ecdsa-key-password"
+  signerKey: "mainnet-ecdsa-key"
+  signerKeyPassword: "mainnet-ecdsa-key-password"
