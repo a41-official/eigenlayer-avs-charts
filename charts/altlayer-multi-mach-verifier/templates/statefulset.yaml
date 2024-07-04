@@ -8,6 +8,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end}}
 spec:
+  serviceName: {{ include "altlayer-multi-mach-verifier.fullname" . }}
   replicas: 1
   selector:
     matchLabels:
