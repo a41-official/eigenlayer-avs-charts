@@ -96,10 +96,10 @@ node:
   resources:
     limits:
       cpu: 800m
-      memory: 2Gi
+      memory: 1Gi
     requests:
       cpu: 800m
-      memory: 2Gi
+      memory: 1Gi
   startupProbe:
     httpGet:
       path: /metrics
@@ -161,12 +161,11 @@ proxy:
   env: []
   resources:
     limits:
-      limits:
       cpu: 500m
-      memory: 2Gi
+      memory: 500Mi
     requests:
       cpu: 500m
-      memory: 2Gi
+      memory: 500Mi
 nodeSelector: {}
 
 tolerations: []
