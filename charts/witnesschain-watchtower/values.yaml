@@ -1,0 +1,201 @@
+# Default values for witnesschain-watchtower.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## Provide a name in place of for `app` labels
+##
+nameOverride: ""
+
+## Provide a name to substitute for the full names of resources
+##
+fullnameOverride: ""
+
+## Common labels
+##
+commonLabels: {}
+
+## Annotations
+##
+annotations: {}
+
+## Number of replicas
+##
+replicas: 1
+
+## Network to which the client is connected
+network: holesky
+
+## Affinity configuration for pods
+##
+affinity: {}
+
+## Tolerations for pods
+##
+tolerations: []
+
+## Security context for pods
+##
+securityContext:
+  runAsUser: 65534
+  runAsGroup: 65534
+
+## Security context for containers
+##
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  runAsNonRoot: true
+  readOnlyRootFilesystem: true
+
+## Node selector for pods
+##
+nodeSelector: {}
+
+## Resource requests and limits
+##
+resources: {}
+
+## Image pull secrets for docker images
+##
+imagePullSecrets: []
+
+## Image of witnesschain watchtower
+##
+image:
+  ## Watchtower container image repository
+  ##
+  repository: witnesschain/watchtower
+
+  ## Watchtower container iamge tag
+  ##
+  tag: latest
+
+  ## Watchtower container pull policy
+  ##
+  pullPolicy: IfNotPresent
+
+## Liveness probe
+##
+livenessProbe:
+  httpGet:
+    port: metrics
+    path: /metrics
+  initialDelaySeconds: 60
+  periodSeconds: 120
+
+## Readiness probe
+##
+readinessProbe:
+  httpGet:
+    port: metrics
+    path: /metrics
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+## Metrics Port
+##
+metricsPort: 9090
+
+## Service configuration
+##
+service:
+  ## Service type
+  ##
+  type: ClusterIP
+
+  ## LoadBalancer IP
+  ##
+  loadBalancerIP: ""
+
+  ## External traffic policy
+  ##
+  externalTrafficPolicy: Cluster
+
+  ## Service port
+  ##
+  port: 9090
+
+## Service account to use
+##
+serviceAccount:
+  ## Specifies whether a service account should be created
+  ##
+  create: false
+
+  ## Name of the service account to use
+  ##
+  name: ""
+
+## Service monitor to use
+##
+serviceMonitor:
+  ## If true, create a serviceMonitor
+  ##
+  enabled: true
+
+  ## Path to scrape
+  ##
+  path: /metrics
+
+  ## Scrape interval
+  ##
+  interval: 1m
+
+  ## Scrape timeout
+  ##
+  scrapeTimeout: 30s
+
+## Additional env variables
+##
+extraEnv: []
+
+## Additional volume mounts
+##
+extraVolumeMounts: []
+
+## Secrets for watchtower
+##
+secretNames:
+  ## Secret name for watchtower key
+  ##
+  watchtowerKey: ""
+
+## Watchtower client configuration
+##
+clientConfig:
+  json: |-
+    {
+      "host_name": "my-watchtower.my-domain.com",
+      "watchtower_failure_alert_url": "https://my-failure-alert/url",
+      "eth_testnet_websocket_url": "wss://my-L1-node",
+      "proof_submission_chain_url": "wss://blue-orangutan-rpc.eu-north-2.gateway.fm/ws",
+      "currently_watching_l1": "eth_testnet",
+      "eth_testnet_chain_id": 11155111,
+      "proof_submission_chain_id": 1237146866,
+      "currently_watching_l2": "base",
+      "witnesschain_coordinator_url": "https://api.witnesschain.com",
+      "l2": {
+        "op_super_chains": [
+          {
+            "chain_name": "base",
+            "chain_id": 84532,
+            "op_geth_websocket_url": "ws://node.witnesschain.com:8547",
+            "op_geth_rpc_url": "http://node.witnesschain.com:8548",
+            "op_node_rpc_url": "http://node.witnesschain.com:9546",
+            "l2oo_address": "0x84457ca9D0163FbC4bbfe4Dfbb20ba46e48DF254"
+          },
+          {
+            "chain_name": "optimism",
+            "chain_id": 11155420,
+            "op_geth_websocket_url": "ws://100.25.2.15:8546",
+            "op_geth_rpc_url": "http://100.25.2.15:8545",
+            "op_node_rpc_url": "http://100.25.2.15:9545",
+            "l2oo_address": "0x90E9c4f8a994a250F6aEfd61CAFb4F2e895D458F"
+          }
+        ]
+      },
+      "alert_manager_address": "0xF9696529cB591E0EA9f08BBB5908Ae4a342a1F14",
+      "diligence_proof_manager_address": "0x7AB3b14F3177935d4539d80289906633615393F2",
+      "operator_registry": "0x26710e60A36Ace8A44e1C3D7B33dc8B80eAb6cb7",
+      "receipt_timeout": 300,
+      "watchtower_retries": 5
+    }
