@@ -1,0 +1,68 @@
+replicaCount: 1
+labels: {}
+commonLabels: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+annotations: {}
+resources: {}
+
+service:
+  type: ClusterIP
+  port: 9090
+
+serviceAccount:
+  create: true
+  name: ""
+
+serviceMonitor:
+  enabled: true
+  path: /metrics
+  interval: 1m
+  scrapeTimeout: 30s
+
+network: holesky
+
+metricsPort: 9090
+
+secretNames:
+  lagrPwdKey: ""
+  lagrKeystoreKey: ""
+
+worker:
+  image:
+    repository: lagrangelabs/worker
+    tag: "{{ .Values.global.network }}"
+  environment:
+    RUST_LOG: "info,worker=debug"
+    PUBLIC_PARAMS__SKIP_STORE: "false"
+    RPC_URL: "https://ethereum-holesky-rpc.publicnode.com"
+  configToml: |
+    [worker]
+    data_dir = "/tmp"
+    instance_type = "medium"
+    [avs]
+    gateway_url = "ws://gateway.test-distributed-query.test.distributed-query.io:80"
+    issuer = "lagrange"
+    worker_id = "generic-worker"
+    [prometheus]
+    port = 9090
+
+# watchtower:
+#   image:
+#     repository: containrrr/watchtower
+#     tag: latest
+#   command:
+#   - --interval
+#   - "60"
+#   - "lagrangelabs/worker:${NETWORK}"
+
+persistence:
+  config:
+    enabled: true
+    size: 1Gi
+    storageClass: local-path
+  zkmr_params:
+    enabled: true
+    size: 20Gi
+    storageClass: local-path
