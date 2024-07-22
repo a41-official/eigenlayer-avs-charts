@@ -24,7 +24,8 @@ spec:
         {{- toYaml .Values.nodeSelector | nindent 8 }}
       containers:
         - name: worker
-          image: "{{ .Values.worker.image.repository }}:{{  .Values.worker.image.tag  }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             {{- range $key, $value := .Values.worker.environment }}
             - name: {{ $key }}
