@@ -33,10 +33,12 @@ secretNames:
   lagrPwdKey: ""
   lagrKeystoreKey: ""
 
+image:
+  repository: lagrangelabs/worker
+  tag: holesky
+  pullPolicy: IfNotPresent
+
 worker:
-  image:
-    repository: lagrangelabs/worker
-    tag: "{{ .Values.global.network }}"
   environment:
     RUST_LOG: "info,worker=debug"
     PUBLIC_PARAMS__SKIP_STORE: "false"
