@@ -50,13 +50,6 @@ spec:
             - name: zkmr-params
               mountPath: /zkmr_params
           command: ["worker", "--config", "/config/worker-conf.toml"]
-        # - name: watchtower
-        #   image: "{{ .Values.watchtower.image.repository }}:{{ .Values.watchtower.image.tag }}"
-        #   args:
-        #     {{- toYaml .Values.watchtower.command | nindent 12 }}
-        #   volumeMounts:
-        #     - name: docker-sock
-        #       mountPath: /var/run/docker.sock
       volumes:
         - name: worker-conf
           configMap:
@@ -67,9 +60,6 @@ spec:
             items:
               - key: {{ .Values.secretNames.lagrKeystoreKey }}
                 path: lagr_keystore.json
-        # - name: docker-sock
-        #   hostPath:
-        #     path: /var/run/docker.sock
   volumeClaimTemplates:
     - metadata:
         name: config
