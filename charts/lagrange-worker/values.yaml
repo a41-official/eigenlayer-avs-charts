@@ -4,7 +4,11 @@ commonLabels: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
-annotations: {}
+annotations:
+  keel.sh/policy: all
+  keel.sh/trigger: poll
+  keel.sh/pollSchedule: "@every 60s"
+
 resources: {}
 
 service:
