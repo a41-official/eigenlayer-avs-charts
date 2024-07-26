@@ -1,6 +1,6 @@
 apiVersion: v2
-name: mach-operator
-description: Mach operator helm charts
+name: altlayer-mach
+description: Altlayer Mach operator helm charts
 
 # A chart can be either an 'application' or a 'library' chart.
 #
