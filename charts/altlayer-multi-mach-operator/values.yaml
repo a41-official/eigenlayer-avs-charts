@@ -17,7 +17,7 @@ service:
   type: ClusterIP
   ports:
     - name: node-api
-      port: 8901
+      port: 9091
       protocol: TCP
       targetPort: node-api
     - name: proxy-api
@@ -83,7 +83,7 @@ node:
   args:
     - --avs-config=/app/configs/avs_configs.json
   ports:
-    - containerPort: 8901
+    - containerPort: 9091
       protocol: TCP
       name: node-api
     - containerPort: 9092
