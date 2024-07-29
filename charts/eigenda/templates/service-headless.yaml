@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "eigenda.fullname" . }}-headless
+  labels:
+    {{- include "eigenda.labels" . | nindent 4 }}
+spec:
+  clusterIP: None
+  ports:
+  {{- if .Values.headlessPorts }}
+    {{ toYaml .Values.headlessPorts | nindent 4}}
+  {{- end }}
+  selector:
+    {{- include "eigenda.selectorLabels" . | nindent 4 }}
