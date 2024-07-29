@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "eigenda.fullname" . }}
+  annotations:
+    {{- tpl (toYaml .Values.service.annotations | nindent 4) $ }}
   labels:
     {{- include "eigenda.labels" . | nindent 4 }}
 spec:
@@ -10,8 +12,17 @@ spec:
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
   {{- end }}
   ports:
-  {{- if .Values.ports }}
-    {{ toYaml .Values.ports | nindent 4}}
-  {{- end }}
+    - name: retrieval
+      port: {{ .Values.retrievalPort }}
+      protocol: TCP
+      targetPort: retrieval
+    - name: dispersal
+      port: {{ .Values.dispersalPort }}
+      protocol: TCP
+      targetPort: dispersal
+    - name: node-api
+      port: {{ .Values.nodeApiPort }}
+      protocol: TCP
+      targetPort: node-api
   selector:
     {{- include "eigenda.selectorLabels" . | nindent 4 }}
