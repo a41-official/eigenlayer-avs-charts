@@ -81,7 +81,7 @@ spec:
               subPath: MachServiceManager.json
             - name: bls-key
               mountPath: /app/operator_keys/bls_key.json
-              subPath: bls_key.json
+              subPath: keystore.json
               readOnly: true
             - name: config
               mountPath: /app/configs/avs_configs.json
@@ -93,7 +93,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.secrets.blsKeyPassword }}
-                  key: blsKeyPassword
+                  key: password
             - name: ENABLE_METRICS
               value: "true"
             - name: EIGEN_METRICS_URL

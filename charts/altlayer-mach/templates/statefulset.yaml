@@ -80,7 +80,7 @@ spec:
               mountPath: /data
             - name: bls-key
               mountPath: /app/operator_keys/bls_key.json
-              subPath: bls_key.json
+              subPath: keystore.json
               readOnly: true
             - name: config
               mountPath: /app/config/operator.yaml
@@ -90,7 +90,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.secrets.blsKeyPassword }}
-                  key: blsKeyPassword
+                  key: password
         - name: verifier
           {{- with .Values.verifier.command }}
           command:

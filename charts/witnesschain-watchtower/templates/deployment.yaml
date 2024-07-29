@@ -50,7 +50,7 @@ spec:
             - sh
             - -c
             - |
-              key=$(cat /app/secret/watchtowerKey) &&
+              key=$(cat /app/secret/key) &&
               jq --arg key "$key" ". + {private_key: \$key}" /app/config/config-without-key.json > /watchtower/src/client/config.json
           volumeMounts:
             - name: init-config
