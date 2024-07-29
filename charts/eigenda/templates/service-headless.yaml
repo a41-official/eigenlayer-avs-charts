@@ -7,8 +7,9 @@ metadata:
 spec:
   clusterIP: None
   ports:
-  {{- if .Values.headlessPorts }}
-    {{ toYaml .Values.headlessPorts | nindent 4}}
-  {{- end }}
+    - name: metrics
+      port: {{ .Values.metricsPort }}
+      protocol: TCP
+      targetPort: metrics
   selector:
     {{- include "eigenda.selectorLabels" . | nindent 4 }}

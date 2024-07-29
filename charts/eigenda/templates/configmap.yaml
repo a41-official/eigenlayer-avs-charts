@@ -33,114 +33,104 @@ kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-proxy-env
 data:
-    REQUEST_LIMIT: "10r/s"
-    BURST_LIMIT: "50"
-    NODE_HOST: {{ include "eigenda.fullname" . }}-node
-    NODE_API_PORT: {{ .Values.proxy.ports.node-api }}
-    NODE_INTERNAL_RETRIEVAL_PORT: {{ .Values.proxy.ports.retrieval }}
+  REQUEST_LIMIT: "10r/s"
+  BURST_LIMIT: "50"
+  NODE_HOST: 127.0.0.1
+  NODE_API_PORT: {{ .Values.nodeApiPort | quote }}
+  NODE_INTERNAL_RETRIEVAL_PORT: {{ .Values.retreivalPort | quote }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-node-env
 data:
-    # EigenDA specific configs
-    NODE_EXPIRATION_POLL_INTERVAL: 180
-    NODE_CACHE_ENCODED_BLOBS: true
-    NODE_NUM_WORKERS: 1
-    NODE_DISPERSAL_PORT: {{ .Values.node.ports.dispersal }}
+  # These are used for testing purpose
+  NODE_TEST_PRIVATE_BLS: ""
+  NODE_PRIVATE_KEY: ""
 
-    # This is a dummy value for now. This won't be used as we are explicitly asking for quorum while opting in/out
-    # In future release, this will be removed
-    NODE_QUORUM_ID_LIST: {{ .Values.quorumIdList }}
+  # EigenDA specific configs
+  NODE_EXPIRATION_POLL_INTERVAL: "180"
+  NODE_CACHE_ENCODED_BLOBS: "true"
+  NODE_NUM_WORKERS: "1"
+  NODE_DISPERSAL_PORT: {{ .Values.dispersalPort | quote }}
 
-    NODE_VERBOSE: true
-    NODE_RETRIEVAL_PORT: {{ .Values.proxy.ports.retrieval }}
-    NODE_TIMEOUT: 20s
-    NODE_SRS_ORDER: 268435456
-    NODE_SRS_LOAD: 131072
+  # This is a dummy value for now. This won't be used as we are explicitly asking for quorum while opting in/out
+  # In future release, this will be removed
+  NODE_QUORUM_ID_LIST: {{ .Values.quorumIdList }}
 
-    # Reachability Check
-    NODE_REACHABILITY_POLL_INTERVAL: 60
-    {{- if eq .Values.network "mainnet" }}
-    NODE_DATAAPI_URL: https://dataapi.eigenda.xyz
-    {{ else }}
-    NODE_DATAAPI_URL: https://dataapi-holesky.eigenda.xyz
-    {{- end }}
+  NODE_VERBOSE: "true"
+  NODE_RETRIEVAL_PORT: {{ .Values.retrievalPort | quote }}
+  NODE_TIMEOUT: 20s
+  NODE_SRS_ORDER: "268435456"
+  NODE_SRS_LOAD: "131072"
 
-    # EigenDA mounted locations
-    NODE_ECDSA_KEY_FILE: /app/operator_keys/ecdsa_key.json
-    NODE_BLS_KEY_FILE: /app/operator_keys/bls_key.json
-    NODE_G1_PATH: /app/g1.point
-    NODE_G2_POWER_OF_2_PATH: /app/g2.point.powerOf2
-    NODE_CACHE_PATH: /app/cache
-    NODE_LOG_PATH: /app/logs/opr.log
-    NODE_DB_PATH: /data/operator/db
+  # Reachability Check
+  NODE_REACHABILITY_POLL_INTERVAL: "60"
+  {{- if eq .Values.network "mainnet" }}
+  NODE_DATAAPI_URL: https://dataapi.eigenda.xyz
+  {{ else }}
+  NODE_DATAAPI_URL: https://dataapi-holesky.eigenda.xyz
+  {{- end }}
 
-    # Node logs configs
-    NODE_LOG_LEVEL: debug
-    NODE_LOG_FORMAT: text
+  # EigenDA mounted locations
+  NODE_ECDSA_KEY_FILE: /app/.eigenlayer/operator_keys/ecdsa.key.json
+  NODE_BLS_KEY_FILE: /app/.eigenlayer/operator_keys/bls.key.json
+  NODE_G1_PATH: /data/resources/g1.point
+  NODE_G2_POWER_OF_2_PATH: /data/resources/g2.point.powerOf2
+  NODE_CACHE_PATH: /data/resources/cache
+  NODE_LOG_PATH: /data/logs/opr.log
+  NODE_DB_PATH: /data/operator/db
 
-    # Metrics specific configs
-    NODE_ENABLE_METRICS: true
-    NODE_METRICS_PORT: 9092
+  # Node logs configs
+  NODE_LOG_LEVEL: debug
+  NODE_LOG_FORMAT: text
 
-    {{- if eq .Values.network "mainnet" }}
-    # mainnet smart contracts
-    NODE_EIGENDA_SERVICE_MANAGER: 0x870679E138bCdf293b7Ff14dD44b70FC97e12fc0
-    NODE_BLS_OPERATOR_STATE_RETRIVER: 0xD5D7fB4647cE79740E6e83819EFDf43fa74F8C31
-    {{ else }}
-    # holesky smart contracts
-    NODE_EIGENDA_SERVICE_MANAGER: 0xD4A7E1Bd8015057293f0D0A557088c286942e84b
-    NODE_BLS_OPERATOR_STATE_RETRIVER: 0xB4baAfee917fb4449f5ec64804217bccE9f46C67
-    {{- end }}
+  # Metrics specific configs
+  NODE_ENABLE_METRICS: "true"
+  NODE_METRICS_PORT: {{ .Values.metricsPort | quote }}
 
-    # Churner URL
-    {{- if eq .Values.network "mainnet" }}
-    NODE_CHURNER_URL: churner.eigenda.xyz:443
-    {{ else }}
-    NODE_CHURNER_URL: churner-holesky.eigenda.xyz:443
-    {{- end }}
+  # Node API specific configs
+  NODE_ENABLE_NODE_API: "true"
+  NODE_API_PORT: {{ .Values.nodeApiPort | quote }}
 
-    # The name of the header used to get the client IP address
-    # If set to empty string, the IP address will be taken from the connection.
-    # The rightmost value of the header will be used.
-    NODE_CLIENT_IP_HEADER: x-real-ip
-    # How often to check the public IP address of the node. Set this to 0 to disable
-    # automatic IP address updating (if you have a stable IP address)
-    NODE_PUBLIC_IP_CHECK_INTERVAL: 10s
+  {{- if eq .Values.network "mainnet" }}
+  # mainnet smart contracts
+  NODE_EIGENDA_SERVICE_MANAGER: 0x870679E138bCdf293b7Ff14dD44b70FC97e12fc0
+  NODE_BLS_OPERATOR_STATE_RETRIVER: 0xD5D7fB4647cE79740E6e83819EFDf43fa74F8C31
+  {{ else }}
+  # holesky smart contracts
+  NODE_EIGENDA_SERVICE_MANAGER: 0xD4A7E1Bd8015057293f0D0A557088c286942e84b
+  NODE_BLS_OPERATOR_STATE_RETRIVER: 0xB4baAfee917fb4449f5ec64804217bccE9f46C67
+  {{- end }}
 
-    ###############################################################################
-    ####### TODO: Operators please update below values for your node ##############
-    ###############################################################################
-    # TODO: IP of your node
-    NODE_HOSTNAME: {{ .Values.service.loadBalancerIP }}
+  # Churner URL
+  {{- if eq .Values.network "mainnet" }}
+  NODE_CHURNER_URL: churner.eigenda.xyz:443
+  {{ else }}
+  NODE_CHURNER_URL: churner-holesky.eigenda.xyz:443
+  {{- end }}
 
-    # TODO: Node Nginx config
-    NODE_NGINX_CONF_HOST: /config/rate-limit-nginx.conf
+  # The name of the header used to get the client IP address
+  # If set to empty string, the IP address will be taken from the connection.
+  # The rightmost value of the header will be used.
+  NODE_CLIENT_IP_HEADER: x-real-ip
+  # How often to check the public IP address of the node. Set this to 0 to disable
+  # automatic IP address updating (if you have a stable IP address)
+  NODE_PUBLIC_IP_CHECK_INTERVAL: 10s
 
-    # TODO: Operators need to point this to a working chain rpc
-    NODE_CHAIN_RPC: {{ .Values.ethRpcUrl }}
-    {{- if eq .Values.network "mainnet" }}
-    NODE_CHAIN_ID: 1
-    {{ else }}
-    NODE_CHAIN_ID: 17000
-    {{- end }}
+  ###############################################################################
+  ####### TODO: Operators please update below values for your node ##############
+  ###############################################################################
+  # TODO: IP of your node
+  NODE_HOSTNAME: {{ .Values.service.loadBalancerIP }}
 
-    # TODO: Operators need to update this to their own paths
-    USER_HOME: /data
-    EIGENLAYER_HOME: ${USER_HOME}/.eigenlayer
-    EIGENDA_HOME: ${EIGENLAYER_HOME}/eigenda/holesky
+  # TODO: Operators need to point this to a working chain rpc
+  NODE_CHAIN_RPC: {{ .Values.ethRpcUrl }}
+  {{- if eq .Values.network "mainnet" }}
+  NODE_CHAIN_ID: "1"
+  {{ else }}
+  NODE_CHAIN_ID: "17000"
+  {{- end }}
 
-    NODE_LOG_PATH_HOST: ${EIGENDA_HOME}/logs
-    NODE_G1_PATH_HOST: ${USER_HOME}/resources/g1.point
-    NODE_G2_PATH_HOST: ${USER_HOME}/resources/g2.point.powerOf2
-    NODE_DB_PATH_HOST: ${EIGENDA_HOME}/db
-    NODE_CACHE_PATH_HOST: ${USER_HOME}/resources/cache
-
-    # TODO: Operators need to update this to their own keys
-    NODE_ECDSA_KEY_FILE_HOST: ${EIGENLAYER_HOME}/operator_keys/ecdsa.key.json
-    NODE_BLS_KEY_FILE_HOST: ${EIGENLAYER_HOME}/operator_keys/bls.key.json
-
-    # TODO: The ip provider service used to obtain a node's public IP [seeip (default), ipify)
-    NODE_PUBLIC_IP_PROVIDER: seeip
+  # TODO: The ip provider service used to obtain a node's public IP [seeip (default), ipify)
+  NODE_PUBLIC_IP_PROVIDER: seeip

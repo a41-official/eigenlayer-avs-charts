@@ -44,27 +44,24 @@ persistence:
   # Read more (https://github.com/rancher/local-path-provisioner)
   storageClassName: "local-path"
 
+# -- Retrieval Port
+retrievalPort: 32004
+
+# -- Dispersal Port
+dispersalPort: 32005
+
+# -- Node API Port
+nodeApiPort: 9091
+
+# -- Metrics Port
+metricsPort: 9092
+
 service:
   type: LoadBalancer
   loadBalancerIP: ""
-  ports:
-    - name: retrieval
-      port: 32004
-      protocol: TCP
-      targetPort: retrieval
-    - name: dispersal
-      port: 32005
-      protocol: TCP
-      targetPort: dispersal
-    - name: node-api
-      port: 9091
-      protocol: TCP
-      targetPort: node-api
-  headlessPorts:
-    - name: metrics
-      port: 9092
-      protocol: TCP
-      targetPort: metrics
+  # TODO: replace with ingress
+  annotations:
+    metallb.universe.tf/allow-shared-ip: "{{ .Release.Name }}"
 
 ingress:
   enabled: false
@@ -115,13 +112,6 @@ quorumIdList: "0,1"
 node:
   command: []
   args: []
-  ports:
-    - containerPort: 32005
-      protocol: TCP
-      name: dispersal
-    - containerPort: 9092
-      protocol: TCP
-      name: metrics
   image:
     repository: ghcr.io/layr-labs/eigenda/opr-node
     pullPolicy: Always
@@ -133,30 +123,6 @@ node:
     requests:
       cpu: 800m
       memory: 1Gi
-  startupProbe:
-    httpGet:
-      path: /metrics
-      port: 9092
-    initialDelaySeconds: 30
-    periodSeconds: 10
-  readinessProbe:
-    httpGet:
-      path: /metrics
-      port: 9092
-    initialDelaySeconds: 30
-    periodSeconds: 10
-    timeoutSeconds: 3
-    failureThreshold: 3
-    successThreshold: 1
-  livenessProbe:
-    httpGet:
-      path: /metrics
-      port: 9092
-    initialDelaySeconds: 60
-    periodSeconds: 30
-    timeoutSeconds: 3
-    failureThreshold: 2
-    successThreshold: 1
   env: []
 
 # Proxy configuration
@@ -166,13 +132,6 @@ proxy:
     repository: nginx
     pullPolicy: Always
     tag: latest
-  ports:
-    - containerPort: 32004
-      protocol: TCP
-      name: retrieval
-    - containerPort: 9091
-      protocol: TCP
-      name: node-api
   args:
     - --config=/app/configs/operator_proxy.yaml
     - --avs-config=/app/configs/avs_configs.json
@@ -190,7 +149,7 @@ proxy:
       memory: 500Mi
 
 secrets:
-  blsKey: ""
-  blsKeyPassword: ""
-  ecdsaKey: ""
-  ecdsaKeyPassword: ""
+  blsKeystore: ""
+  blsKeystorePassword: ""
+  ecdsaKeystore: ""
+  ecdsaKeystorePassword: ""
