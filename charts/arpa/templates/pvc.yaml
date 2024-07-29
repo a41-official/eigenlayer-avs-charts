@@ -1,0 +1,14 @@
+{{- if .Values.pvc.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.pvc.name }}
+spec:
+  accessModes:
+    {{- toYaml .Values.pvc.accessModes | nindent 2 }}
+  resources:
+    requests:
+      storage: {{ .Values.pvc.resources.requests.storage }}
+  storageClassName: {{ .Values.pvc.storageClassName }}
+---
+{{- end }}
