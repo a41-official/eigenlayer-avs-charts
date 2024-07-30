@@ -64,15 +64,7 @@ spec:
         {{- if .Values.initContainers.updateSocket.enabled }}
         - name: update-socket
           image: {{ .Values.initContainers.updateSocket.image.repository }}:{{ .Values.initContainers.updateSocket.image.tag }}
-          args:
-            - --ecdsa-key-password
-            - "$NODE_ECDSA_KEY_PASSWORD"
-            - --bls-key-password
-            - "$NODE_BLS_KEY_PASSWORD"
-            - --socket
-            - "${NODE_HOSTNAME}:${NODE_DISPERSAL_PORT};${NODE_RETRIEVAL_PORT}"
-            - --operation
-            - update-socket
+          command: ["update-socket"]
           volumeMounts:
             - name: bls-keystore
               mountPath: /app/.eigenlayer/operator_keys/bls.key.json
@@ -84,6 +76,8 @@ spec:
             - configMapRef:
                 name: {{ include "eigenda.fullname" . }}-node-env
           env:
+            - nam: NODE_SOCKET
+              value: "${NODE_HOSTNAME}:${NODE_DISPERSAL_PORT}\;${NODE_RETRIEVAL_PORT}"
             - name: NODE_BLS_KEY_PASSWORD
               valueFrom:
                 secretKeyRef:
