@@ -42,7 +42,7 @@ secrets:
 image:
   repository: lagrangelabs/worker
   tag: holesky # This should be the same as the network
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 worker:
   environment:
