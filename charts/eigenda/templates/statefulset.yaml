@@ -53,8 +53,8 @@ spec:
                 mkdir -p /data/logs && mkdir -p /data/operator/db;
                 git clone https://github.com/Layr-Labs/eigenda-operator-setup.git;
                 cd eigenda-operator-setup && ./srs_setup.sh;
-                cp ./resources/g1.point /data/g1.point;
-                cp ./resources/g2.point.powerOf2 /data/g2.point.powerOf2;
+                mv ./resources/g1.point /data/g1.point;
+                mv ./resources/g2.point.powerOf2 /data/g2.point.powerOf2;
               else
                 echo "SRS exists, skipping setup";
               fi;
@@ -75,13 +75,16 @@ spec:
           {{- toYaml . | nindent 12 }}
           {{- end }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- toYaml .Values.node.securityContext | nindent 12 }}
           image: "{{ .Values.node.image.repository }}:{{ .Values.node.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.node.image.pullPolicy }}
           ports:
           - containerPort: {{ .Values.dispersalPort }}
             protocol: TCP
             name: dispersal
+          - containerPort: {{ .Values.internalRetrievalPort }}
+            protocol: TCP
+            name: retrieval
           - containerPort: {{ .Values.metricsPort }}
             protocol: TCP
             name: metrics
@@ -138,7 +141,7 @@ spec:
           {{- toYaml . | nindent 12 }}
           {{- end }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- toYaml .Values.proxy.securityContext | nindent 12 }}
           image: "{{ .Values.proxy.image.repository }}:{{ .Values.proxy.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.proxy.image.pullPolicy }}
           ports:

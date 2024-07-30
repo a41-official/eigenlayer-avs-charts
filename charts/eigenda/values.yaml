@@ -25,14 +25,6 @@ podLabels: {}
 podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
 persistence:
   # -- Access mode for the volume claim template
   accessModes:
@@ -43,6 +35,9 @@ persistence:
   # E.g 'local-path' for local storage to achieve best performance
   # Read more (https://github.com/rancher/local-path-provisioner)
   storageClassName: "local-path"
+
+# -- Internal Retrieval Port
+internalRetrievalPort: 32003
 
 # -- Retrieval Port
 retrievalPort: 32004
@@ -116,6 +111,7 @@ node:
     repository: ghcr.io/layr-labs/eigenda/opr-node
     pullPolicy: Always
     tag: "0.7.4"
+  securityContext: {}
   resources:
     limits:
       cpu: 800m
@@ -131,15 +127,10 @@ proxy:
   image:
     repository: nginx
     pullPolicy: Always
-    tag: latest
-  args:
-    - --config=/app/configs/operator_proxy.yaml
-    - --avs-config=/app/configs/avs_configs.json
-  env:
-    - name: REQUEST_LIMIT
-      value: "10r/s"
-    - name: BURST_LIMIT
-      value: "50"
+    tag: "1.27.0"
+  securityContext: {}
+  args: []
+  env: []
   resources:
     limits:
       cpu: 500m
