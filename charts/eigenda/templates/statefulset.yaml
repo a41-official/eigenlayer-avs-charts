@@ -131,7 +131,9 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.secrets.ecdsaKeystorePassword }}
                   key: password
+          {{- if .Values.node.env }}
             {{- toYaml .Values.node.env | nindent 12 }}
+          {{- end }}
         - name: proxy
           {{- with .Values.proxy.command }}
           command:
@@ -177,8 +179,10 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "eigenda.fullname" . }}-proxy-env
+          {{- if .Values.proxy.env }}
           env:
             {{- toYaml .Values.proxy.env | nindent 12 }}
+          {{- end }}
       volumes:
         - name: proxy-config
           configMap:
