@@ -4,6 +4,7 @@ commonLabels: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
+# Use keel instead of the watchtower container
 annotations:
   keel.sh/policy: all
   keel.sh/trigger: poll
@@ -13,10 +14,16 @@ resources: {}
 
 service:
   type: ClusterIP
-  port: 9090
+  headlessPorts:
+  - name: metrics
+    port: 9090
+    protocol: TCP
+    targetPort: metrics
+
+metricsPort: 9090
 
 serviceAccount:
-  create: true
+  create: false
   name: ""
 
 serviceMonitor:
@@ -27,22 +34,22 @@ serviceMonitor:
 
 network: holesky
 
-metricsPort: 9090
 
-secretNames:
-  lagrPwdKey: ""
-  lagrKeystoreKey: ""
+secrets:
+  ecdsaKeystorePassword: ""
+  ecdsaKeystore: ""
 
 image:
   repository: lagrangelabs/worker
-  tag: holesky
-  pullPolicy: IfNotPresent
+  tag: holesky # This should be the same as the network
+  pullPolicy: Always
 
 worker:
   environment:
     RUST_LOG: "info,worker=debug"
     PUBLIC_PARAMS__SKIP_STORE: "false"
     RPC_URL: "https://ethereum-holesky-rpc.publicnode.com"
+  # Do not change this config file except for the gateway_url (which differs for each network)
   configToml: |
     [worker]
     data_dir = "/tmp"
@@ -54,20 +61,7 @@ worker:
     [prometheus]
     port = 9090
 
-# watchtower:
-#   image:
-#     repository: containrrr/watchtower
-#     tag: latest
-#   command:
-#   - --interval
-#   - "60"
-#   - "lagrangelabs/worker:${NETWORK}"
-
 persistence:
-  config:
-    enabled: true
-    size: 1Gi
-    storageClass: local-path
   zkmr_params:
     enabled: true
     size: 20Gi
