@@ -35,9 +35,10 @@ metadata:
 data:
   REQUEST_LIMIT: "10r/s"
   BURST_LIMIT: "50"
-  NODE_HOST: 127.0.0.1
+  NODE_HOST: localhost
   NODE_API_PORT: {{ .Values.nodeApiPort | quote }}
-  NODE_INTERNAL_RETRIEVAL_PORT: {{ .Values.retreivalPort | quote }}
+  NODE_RETRIEVAL_PORT: {{ .Values.retrievalPort | quote }}
+  NODE_INTERNAL_RETRIEVAL_PORT: {{ .Values.internalRetrievalPort | quote }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -59,7 +60,7 @@ data:
   NODE_QUORUM_ID_LIST: {{ .Values.quorumIdList }}
 
   NODE_VERBOSE: "true"
-  NODE_RETRIEVAL_PORT: {{ .Values.retrievalPort | quote }}
+  NODE_RETRIEVAL_PORT: {{ .Values.internalRetrievalPort | quote }}
   NODE_TIMEOUT: 20s
   NODE_SRS_ORDER: "268435456"
   NODE_SRS_LOAD: "131072"
@@ -75,9 +76,9 @@ data:
   # EigenDA mounted locations
   NODE_ECDSA_KEY_FILE: /app/.eigenlayer/operator_keys/ecdsa.key.json
   NODE_BLS_KEY_FILE: /app/.eigenlayer/operator_keys/bls.key.json
-  NODE_G1_PATH: /data/resources/g1.point
-  NODE_G2_POWER_OF_2_PATH: /data/resources/g2.point.powerOf2
-  NODE_CACHE_PATH: /data/resources/cache
+  NODE_G1_PATH: /data/g1.point
+  NODE_G2_POWER_OF_2_PATH: /data/g2.point.powerOf2
+  NODE_CACHE_PATH: /data/cache
   NODE_LOG_PATH: /data/logs/opr.log
   NODE_DB_PATH: /data/operator/db
 
