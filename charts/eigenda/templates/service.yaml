@@ -20,9 +20,5 @@ spec:
       port: {{ .Values.dispersalPort }}
       protocol: TCP
       targetPort: dispersal
-    - name: node-api
-      port: {{ .Values.nodeApiPort }}
-      protocol: TCP
-      targetPort: node-api
   selector:
     {{- include "eigenda.selectorLabels" . | nindent 4 }}
