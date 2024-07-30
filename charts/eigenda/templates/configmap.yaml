@@ -60,10 +60,16 @@ data:
   NODE_QUORUM_ID_LIST: {{ .Values.quorumIdList }}
 
   NODE_VERBOSE: "true"
-  NODE_RETRIEVAL_PORT: {{ .Values.internalRetrievalPort | quote }}
+  NODE_RETRIEVAL_PORT: {{ .Values.retrievalPort | quote }}
   NODE_TIMEOUT: 20s
   NODE_SRS_ORDER: "268435456"
   NODE_SRS_LOAD: "131072"
+
+  # If you are using a reverse proxy in a shared network space, the reverse proxy should listen at $NODE_DISPERSAL_PORT
+  # and forward the traffic to $NODE_INTERNAL_DISPERSAL_PORT, and similarly for retrieval. The DA node will register the
+  # $NODE_DISPERSAL_PORT port on the chain and listen for the reverse proxy at $NODE_INTERNAL_DISPERSAL_PORT.
+  NODE_INTERNAL_DISPERSAL_PORT: {{ .Values.dispersalPort | quote }}
+  NODE_INTERNAL_RETRIEVAL_PORT: {{ .Values.internalRetrievalPort | quote }}
 
   # Reachability Check
   NODE_REACHABILITY_POLL_INTERVAL: "60"
@@ -117,7 +123,7 @@ data:
   NODE_CLIENT_IP_HEADER: x-real-ip
   # How often to check the public IP address of the node. Set this to 0 to disable
   # automatic IP address updating (if you have a stable IP address)
-  NODE_PUBLIC_IP_CHECK_INTERVAL: 10s
+  NODE_PUBLIC_IP_CHECK_INTERVAL: "0"
 
   ###############################################################################
   ####### TODO: Operators please update below values for your node ##############
