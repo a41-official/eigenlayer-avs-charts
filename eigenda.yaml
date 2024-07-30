@@ -1,0 +1,24 @@
+network: holesky
+
+ethRpcUrl: "https://ethereum-holesky-rpc.publicnode.com"
+
+service:
+  loadBalancerIP: "121.138.74.21"
+
+persistence:
+  size: 300Gi
+
+node:
+  resources:
+    limits:
+      cpu: 2
+      memory: 4Gi
+    requests:
+      cpu: 2
+      memory: 4Gi
+
+secrets:
+  blsKeystore: "dummy-bls-keystore"
+  blsKeystorePassword: "dummy-bls-password"
+  ecdsaKeystore: "dummy-ecdsa-keystore"
+  ecdsaKeystorePassword: "dummy-ecdsa-password"
