@@ -76,7 +76,7 @@ spec:
             - configMapRef:
                 name: {{ include "eigenda.fullname" . }}-node-env
           env:
-            - nam: NODE_SOCKET
+            - name: NODE_SOCKET
               value: "$(NODE_HOSTNAME):$(NODE_DISPERSAL_PORT);$(NODE_RETRIEVAL_PORT)"
             - name: NODE_BLS_KEY_PASSWORD
               valueFrom:
