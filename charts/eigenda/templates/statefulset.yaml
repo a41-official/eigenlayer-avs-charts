@@ -84,7 +84,7 @@ spec:
             name: dispersal
           - containerPort: {{ .Values.internalRetrievalPort }}
             protocol: TCP
-            name: retrieval
+            name: int-retrieval
           - containerPort: {{ .Values.metricsPort }}
             protocol: TCP
             name: metrics
