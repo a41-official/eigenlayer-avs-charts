@@ -36,44 +36,39 @@ spec:
             - name: AVS__LAGR_PWD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "lagrange-worker.name" . }}-secrets
-                  key: {{ .Values.secretNames.lagrPwdKey }}
+                  name: {{ .Values.secrets.ecdsaKeystorePassword }}
+                  key: password
             - name: AVS__LAGR_KEYSTORE
               value: "/config/lagr_keystore.json"
           ports:
             - name: metrics
               containerPort: {{ .Values.metricsPort }}
+              protocol: TCP
           volumeMounts:
             - name: config
               mountPath: /config
             - name: worker-conf
               mountPath: /config/worker-conf.toml
               subPath: worker-conf.toml
-            - name: lagr-keystore
+            - name: lagr-ecdsa-keystore
               mountPath: /config/lagr_keystore.json
               subPath: lagr_keystore.json
             - name: zkmr-params
               mountPath: /zkmr_params
           command: ["worker", "--config", "/config/worker-conf.toml"]
       volumes:
+        - name: config
+          emptyDir: {}
         - name: worker-conf
           configMap:
             name: {{ include "lagrange-worker.fullname" . }}-config
-        - name: lagr-keystore
+        - name: lagr-ecdsa-keystore
           secret:
-            secretName: {{ include "lagrange-worker.name" . }}-secrets
+            secretName: {{ .Values.secrets.ecdsaKeystore }}
             items:
-              - key: {{ .Values.secretNames.lagrKeystoreKey }}
+              - key: keystore
                 path: lagr_keystore.json
   volumeClaimTemplates:
-    - metadata:
-        name: config
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        storageClassName: {{ .Values.persistence.config.storageClass }}
-        resources:
-          requests:
-            storage: {{ .Values.persistence.config.size }}
     - metadata:
         name: zkmr-params
       spec:
