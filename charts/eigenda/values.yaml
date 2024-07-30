@@ -58,6 +58,22 @@ service:
   annotations:
     metallb.universe.tf/allow-shared-ip: "{{ .Release.Name }}"
 
+networkPolicy:
+  ingress:
+  - ports:
+    - protocol: TCP
+      port: 32004
+  - from:
+    - ipBlock:
+        cidr: 54.144.24.178/32
+    - ipBlock:
+        cidr: 34.232.117.230/32
+    - ipBlock:
+        cidr: 18.214.113.214/32
+    ports:
+    - protocol: TCP
+      port: 32005
+
 ingress:
   enabled: false
   className: ""
