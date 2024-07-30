@@ -30,7 +30,13 @@ persistence:
   accessModes:
   - ReadWriteOnce
   # -- Requested size for volume claim template
-  size: 150Gi
+  # EigenDA requirements: https://docs.eigenlayer.xyz/eigenda/operator-guides/requirements/system-requirements#node-storage-requirements
+  # < 0.03%: 20GB
+  # < 0.2%: 150GB
+  # < 1%: 750GB
+  # < 10%: 4TB
+  # < 20%: 8TB
+  size: 300Gi
   # -- Use a specific storage class
   # E.g 'local-path' for local storage to achieve best performance
   # Read more (https://github.com/rancher/local-path-provisioner)
