@@ -125,6 +125,15 @@ ethRpcUrl: "https://ethereum-holesky-rpc.publicnode.com"
 # In future release, this will be removed
 quorumIdList: "0,1"
 
+# Initcontainer configuration
+initContainers:
+  updateSocket:
+    enabled: true
+    image:
+      repository: ghcr.io/layr-labs/eigenda/opr-nodeplugin
+      pullPolicy: Always
+      tag: "0.7.4"
+
 # Node configuration
 node:
   command: []

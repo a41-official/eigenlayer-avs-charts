@@ -61,6 +61,37 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data
+        {{- if .Values.initContainers.updateSocket.enabled }}
+        - name: update-socket
+          image: {{ .Values.initContainers.updateSocket.image.repository }}:{{ .Values.initContainers.updateSocket.image.tag }}
+          command: |
+            --ecdsa-key-password "$NODE_ECDSA_KEY_PASSWORD"
+            --bls-key-password "$NODE_BLS_KEY_PASSWORD"
+            --socket "$NODE_HOSTNAME":"${NODE_DISPERSAL_PORT}"\;"${NODE_RETRIEVAL_PORT}"
+            --operation update-socket
+            --quorum-id-list $NODE_QUORUM_ID_LIST
+          volumeMounts:
+            - name: bls-keystore
+              mountPath: /app/.eigenlayer/operator_keys/bls.key.json
+              subPath: keystore.json
+            - name: ecdsa-keystore
+              mountPath: /app/.eigenlayer/operator_keys/ecdsa.key.json
+              subPath: keystore.json
+          envFrom:
+            - configMapRef:
+                name: {{ include "eigenda.fullname" . }}-node-env
+          env:
+            - name: NODE_BLS_KEY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.blsKeystorePassword }}
+                  key: password
+            - name: NODE_ECDSA_KEY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.ecdsaKeystorePassword }}
+                  key: password
+        {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -76,7 +107,7 @@ spec:
           {{- end }}
           securityContext:
             {{- toYaml .Values.node.securityContext | nindent 12 }}
-          image: "{{ .Values.node.image.repository }}:{{ .Values.node.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.node.image.repository }}:{{ .Values.node.image.tag }}"
           imagePullPolicy: {{ .Values.node.image.pullPolicy }}
           ports:
           - containerPort: {{ .Values.dispersalPort }}
@@ -112,11 +143,9 @@ spec:
             - name: bls-keystore
               mountPath: /app/.eigenlayer/operator_keys/bls.key.json
               subPath: keystore.json
-              readOnly: true
             - name: ecdsa-keystore
               mountPath: /app/.eigenlayer/operator_keys/ecdsa.key.json
               subPath: keystore.json
-              readOnly: true
           envFrom:
             - configMapRef:
                 name: {{ include "eigenda.fullname" . }}-node-env
