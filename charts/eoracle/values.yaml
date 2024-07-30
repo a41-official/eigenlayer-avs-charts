@@ -10,16 +10,15 @@ image:
   tag: "v0.1.8"
 
 env:
-  EO_OPERATOR_CLI_IMAGE: eoracle/opr_cli:v0.0.12
-  EO_CHAIN_RPC_ENDPOINT: https://rpc.eoracle.network
-  EO_CHAIN_WS_ENDPOINT: wss://rpc.eoracle.network/ws
-  EO_REGISTRY_COORDINATOR: "0x757E6f572AfD8E111bD913d35314B5472C051cA8"
-  EO_STAKE_REGISTRY: "0x761DF0e99160a4bd19391475D2a1101eaab20F24"
-  EO_AGGREGATOR_ADDRESS: "0x4E70004b01987B4fd7DAcab348F0B39E9AE26110"
-  EO_CONFIG_ADDRESS: "0x05a6f762f64Ac2ccE0588677317a0Ed8af9d0c16"
-  ETH_RPC_ENDPOINT: https://eth-mainnet.g.alchemy.com/v2/wGZwmC7PkgnKawXtigCcvzKmZFETYT1F
-  ETHEREUM_FEED_RPC_ENDPOINT: https://eth-mainnet.g.alchemy.com/v2/wGZwmC7PkgnKawXtigCcvzKmZFETYT1F
-  EO_KEYSTORE_PATH: /app/.keytore
+  EO_CHAIN_RPC_ENDPOINT: https://rpc.testnet.eoracle.network
+  EO_CHAIN_WS_ENDPOINT: wss://rpc.testnet.eoracle.network/ws
+  EO_REGISTRY_COORDINATOR: "0xc4A6E362e8Bd89F28Eb405F9Aa533784884B9c4F"
+  EO_STAKE_REGISTRY: "0xdda1a381920971642477CA79F5BFc1515414782d"
+  EO_AGGREGATOR_ADDRESS: "0x6B0BE2aaD42612803c9Fc389A3806EF21E8cbDb6"
+  EO_CONFIG_ADDRESS: "0xf735Ad57952906a672eEEaDbef3bC69ECD24E50C"
+  ETH_RPC_ENDPOINT: https://ethereum-holesky-rpc.publicnode.com
+  ETHEREUM_FEED_RPC_ENDPOINT: https://ethereum-holesky-rpc.publicnode.com
+  EO_KEYSTORE_PATH: .keystore
   EO_PROMETHEUS_PORT: "10004"
   EO_HEALTH_ENDPOINTS_PORT: "10003"
   EO_LOGGING_LEVEL: info
@@ -27,7 +26,6 @@ env:
 secrets:
   blsKey: ""
   ecdsaAliasedKey: ""
-  ecdsaKey: ""
   passphrase: ""
 
 
