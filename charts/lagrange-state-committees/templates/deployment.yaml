@@ -37,17 +37,17 @@ spec:
           mountPath: /app/config/client.toml
           subPath: client.toml
         - name: bls-keystore
-          mountPath: /app/config/keystore/bls.key
-          subPath: bls.key
+          mountPath: /app/config/keystore/bls.json
+          subPath: keystore.json
         - name: bls-keystore-pass
           mountPath: /app/config/keystore/bls.pass
-          subPath: bls.pass
+          subPath: password
         - name: signer-keystore
-          mountPath: /app/config/keystore/signer.key
-          subPath: signer.key
+          mountPath: /app/config/keystore/signer.json
+          subPath: keystore.json
         - name: signer-keystore-pass
           mountPath: /app/config/keystore/signer.pass
-          subPath: signer.pass
+          subPath: password
         command: ["/bin/sh", "-c", "/app/lagrange-node run-client -c /app/config/client.toml"]
         resources:
           limits:
