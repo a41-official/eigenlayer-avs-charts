@@ -60,3 +60,17 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{- define "arpa.serviceMonitorRelabelings" -}}
+{{- if .Values.serviceMonitor.enabled -}}
+- action: replace
+  targetLabel: chain
+  replacement: eigenlayer
+- action: replace
+  targetLabel: avs
+  replacement: arpa
+- action: replace
+  targetLabel: network
+  replacement: {{ tpl .Values.network $ }}
+{{- end -}}
+{{- end -}}

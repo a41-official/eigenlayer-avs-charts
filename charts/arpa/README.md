@@ -47,7 +47,7 @@ kubeseal \
 
 create sealed secrets
 ```
-kubeseal --format yaml --cert mycert.pem  -f ./sealed-holesky.yaml > sealedSecret.yaml 
+kubeseal --format yaml --cert mycert.pem -n avs-a41-holesky -f ./secret.yaml > sealedSecret.yaml 
 ```
 
 install
@@ -55,11 +55,15 @@ install
 helm install arpa ./ -f ./values.yaml -n avs-a41-holesky
 ```
 
+
 uninstall
 ```
 helm uninstall arpa -n avs-a41-holesky
 ```
-
+upgrade
+```
+helm upgrade arpa ./ -f ./values.yaml -n avs-a41-holesky
+```
 exec
 ```
 k exec -it arpa-0 -n avs-a41-holesky -- /bin/sh

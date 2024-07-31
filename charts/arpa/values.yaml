@@ -7,7 +7,7 @@ commonLabels:
 replicas: 1
 network: ""
 nodeSelector:
-  a41.io/project: avs
+  a41.io/project: ""
 
 image:
   repository: ghcr.io/arpa-network/node-client
@@ -17,6 +17,9 @@ image:
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+serviceMonitor:
+  enabled: true
 
 serviceAccount:
   create: true
@@ -92,43 +95,22 @@ sealedSecrets:
     name: "arpa-node-ecdsa-password"
     encryptedData:
       password: ""
-
+  arpaAwsSecret:
+    name: "aws-secret"
+    encryptedData:
+      awsAccessKeyId: ""
+      awsSecretAccessKey: ""
 configs:
   config.yml: {}
+
 tolerations: []
 affinity: {}
 
-pvc:
-  enabled: true
-  name: arpa-pvc
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
-  storageClassName: local-path
-
-volumes: 
-- name: config
-  configMap:
-    name: arpa-config
-- name: node-ecdsa-keystore
-  secret:
-    secretName: arpa-node-ecdsa-keystore 
-- name: data
-  persistentVolumeClaim:
-    claimName: arpa-pvc
-
-volumeMounts:
-- name: data
-  mountPath: "/app/db"
-  subPath: db
-- name: data
-  mountPath: "/app/log"
-  subPath: log
-- name: config
-  mountPath: "/app/config.yml"
-  subPath: config.yml
-- name: node-ecdsa-keystore
-  mountPath: "/app/node.keystore"
-  subPath: keystore
+cronjob:
+  schedule: "0 0 * * *"
+  s3:
+    bucketName: ""
+  container:
+    name: backup-container
+    image: amazon/aws-cli
+    mountPath: /app/db
