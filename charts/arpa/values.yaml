@@ -1,0 +1,116 @@
+commonLabels:
+  a41.io/project: avs
+  a41.io/network: ""
+  a41.io/chain: eigenlayer
+  a41.io/avs: arpa
+  a41.io/delegator: a41
+replicas: 1
+network: ""
+nodeSelector:
+  a41.io/project: ""
+
+image:
+  repository: ghcr.io/arpa-network/node-client
+  pullPolicy: Always
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceMonitor:
+  enabled: true
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+externalService:
+  type: LoadBalancer
+  ports:
+    - name: cmtr-ex-rpc
+      port: 50061
+      targetPort: 50061
+      protocol: TCP
+  loadBalancerIP: ""
+
+internalService:
+  ports:
+    - name: cmtr-rpc
+      port: 50061
+      targetPort: 50061
+      protocol: TCP
+    - name: management-rpc
+      port: 50091
+      targetPort: 50091
+      protocol: TCP
+    - name: statistics-http
+      port: 50081
+      targetPort: 50081
+      protocol: TCP
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 50081
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 3
+  successThreshold: 1
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 50081
+  initialDelaySeconds: 1200
+  periodSeconds: 30
+  timeoutSeconds: 3
+  failureThreshold: 2
+  successThreshold: 1
+
+resources: 
+  limits:
+    cpu: 1000m
+    memory: 2048Mi
+  requests:
+    cpu: 1000m
+    memory: 2048Mi
+
+sealedSecrets:
+  enabled: true
+  arpaNodeKey:
+    name: "arpa-node-ecdsa-keystore"
+    encryptedData:
+      keystore: ""
+  arpaNodeKeyPassword:
+    name: "arpa-node-ecdsa-password"
+    encryptedData:
+      password: ""
+  arpaAwsSecret:
+    name: "aws-secret"
+    encryptedData:
+      awsAccessKeyId: ""
+      awsSecretAccessKey: ""
+configs:
+  config.yml: {}
+
+tolerations: []
+affinity: {}
+
+cronjob:
+  schedule: "0 0 * * *"
+  s3:
+    bucketName: ""
+  container:
+    name: backup-container
+    image: amazon/aws-cli
+    mountPath: /app/db

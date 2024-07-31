@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: db-backup
+spec:
+  schedule: {{ .Values.cronjob.schedule | quote }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: {{ .Values.cronjob.container.name }}
+              image: {{ .Values.cronjob.container.image }}
+              command: ["/bin/sh", "-c"]
+              args:
+                - >
+                  tar -czf /tmp/db-backup.tar.gz -C {{ .Values.cronjob.container.mountPath }} . &&
+                  aws s3 cp /tmp/db-backup.tar.gz s3://{{ .Values.cronjob.s3.bucketName }}/db-backup-$(date +\%F).tar.gz;
+              volumeMounts:
+                - name: arpa-pvc
+                  mountPath: {{ .Values.cronjob.container.mountPath }}
+              env:
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: aws-secret
+                      key: aws-access-key-id
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: aws-secret
+                      key: aws-secret-access-key
+          restartPolicy: OnFailure
+          volumes:
+            - name: arpa-pvc
+              persistentVolumeClaim:
+                claimName: arpa-pvc

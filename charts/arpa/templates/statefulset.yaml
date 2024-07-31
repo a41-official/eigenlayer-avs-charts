@@ -1,0 +1,132 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "arpa.fullname" . }}
+  labels:
+    {{- include "arpa.labels" . | nindent 4 }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "arpa.selectorLabels" . | nindent 6 }}
+  volumeClaimTemplates:
+    - metadata:
+        name: arpa-pvc
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 20Gi
+        storageClassName: local-path
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "arpa.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes: 
+      - name: config
+        configMap:
+          name: arpa-config
+      - name: node-ecdsa-keystore
+        secret:
+          secretName: arpa-node-ecdsa-keystore 
+      - name: data
+        persistentVolumeClaim:
+          claimName: arpa-pvc
+      serviceAccountName: {{ include "arpa.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: init-s3-download
+          image: alpine
+          command: ["/bin/sh", "-c"]
+          args:
+          - >
+            apk add --no-cache aws-cli tar &&
+            BUCKET={{ if eq .Values.network "mainnet" }}avs-arpa-mainnet{{ else }}avs-arpa-holesky{{ end }} &&
+            FILE=$(aws s3 ls s3://$BUCKET/db/ --recursive | sort | tail -n 1 | awk '{print $4}') &&
+            aws s3 cp s3://$BUCKET/$FILE /tmp/db-backup.tar.gz &&
+            [ -d /app/db ] || mkdir -p /app/db &&
+            tar -xzf /tmp/db-backup.tar.gz -C /app/db;
+          volumeMounts:
+            - name: arpa-pvc
+              mountPath: /app/db
+              subPath: db
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-secret
+                  key: awsAccessKeyId
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-secret
+                  key: awsSecretAccessKey
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - name: data
+            mountPath: "/app/db"
+            subPath: db
+          - name: data
+            mountPath: "/app/log"
+            subPath: log
+          - name: config
+            mountPath: "/app/config.yml"
+            subPath: config.yml
+          - name: node-ecdsa-keystore
+            mountPath: "/app/node.keystore"
+            subPath: keystore
+          ports:
+          {{- range .Values.internalService.ports }}
+            - name: {{ .name }}
+              containerPort: {{ .targetPort }}
+          {{- end }}
+          {{- range .Values.externalService.ports }}
+            - name: {{ .name }}
+              containerPort: {{ .targetPort }}
+          {{- end }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: ARPA_NODE_ACCOUNT_KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.sealedSecrets.arpaNodeKeyPassword.name }}
+                  key: password
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
