@@ -37,13 +37,13 @@ spec:
           mountPath: /app/config/client.toml
           subPath: client.toml
         - name: bls-keystore
-          mountPath: /app/config/keystore/bls.json
+          mountPath: /app/config/keystore/bls.key
           subPath: keystore.json
         - name: bls-keystore-pass
           mountPath: /app/config/keystore/bls.pass
           subPath: password
         - name: signer-keystore
-          mountPath: /app/config/keystore/signer.json
+          mountPath: /app/config/keystore/signer.key
           subPath: keystore.json
         - name: signer-keystore-pass
           mountPath: /app/config/keystore/signer.pass
