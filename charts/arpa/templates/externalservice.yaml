@@ -21,4 +21,4 @@ spec:
   loadBalancerIP: {{ .Values.externalService.loadBalancerIP }}
 {{- end }}
   selector:
-    app: {{ include "arpa.name" . }}
+    {{- include "arpa.selectorLabels" . | nindent 4 }}

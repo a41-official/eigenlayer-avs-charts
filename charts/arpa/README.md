@@ -16,7 +16,8 @@ ARPA threshold BLS network can serve as the infrastructure of verifiable random 
 - node_statistics_http_endpoint: `50081`
 
 ## Secrets
-- arpa node account keystore, keystore password
+
+- arpa node account keystore, keystore password, aws s3 credential
 ```
 apiVersion: v1
 kind: Secret
@@ -24,15 +25,24 @@ metadata:
   name: arpa-node-ecdsa-keystore
 type: Opaque
 data:
-  json: YOUR_ARPA_KEY_BASE64_ENCODED
+  keystore: 
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: arpa-node-key-password
+  name: arpa-node-ecdsa-password
 type: Opaque
 data:
-  json: YOUR_ARPA_KEY_PASSWORD_BASE64_ENCODED
+  password:
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: aws-secret
+type: Opaque
+data:
+  awsAccessKeyId: 
+  awsSecretAccessKey: 
 ```
 
 ## Commands
@@ -52,18 +62,24 @@ kubeseal --format yaml --cert mycert.pem -n avs-a41-holesky -f ./secret.yaml > s
 
 install
 ```
-helm install arpa ./ -f ./values.yaml -n avs-a41-holesky
+helm install arpa ./ -f ./values.yaml -n avs-a41-mainnet
 ```
-
 
 uninstall
 ```
-helm uninstall arpa -n avs-a41-holesky
+helm uninstall arpa -n avs-a41-mainnet
 ```
+
 upgrade
 ```
 helm upgrade arpa ./ -f ./values.yaml -n avs-a41-holesky
 ```
+
+logs
+```
+k logs -f arpa-0 -n avs-a41-holesky
+```
+
 exec
 ```
 k exec -it arpa-0 -n avs-a41-holesky -- /bin/sh
