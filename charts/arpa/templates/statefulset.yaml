@@ -20,7 +20,7 @@ spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            storage: 20Gi
+            storage: 30Gi
         storageClassName: local-path
   template:
     metadata:
@@ -45,9 +45,6 @@ spec:
       - name: node-ecdsa-keystore
         secret:
           secretName: arpa-node-ecdsa-keystore 
-      - name: data
-        persistentVolumeClaim:
-          claimName: arpa-pvc
       serviceAccountName: {{ include "arpa.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -85,10 +82,10 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
-          - name: data
+          - name: arpa-pvc
             mountPath: "/app/db"
             subPath: db
-          - name: data
+          - name: arpa-pvc
             mountPath: "/app/log"
             subPath: log
           - name: config
