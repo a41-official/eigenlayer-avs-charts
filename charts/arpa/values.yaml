@@ -1,6 +1,6 @@
 commonLabels:
   a41.io/project: avs
-  a41.io/network: ""
+  a41.io/network: mainnet
   a41.io/chain: eigenlayer
   a41.io/avs: arpa
   a41.io/delegator: a41
@@ -12,7 +12,7 @@ nodeSelector:
 image:
   repository: ghcr.io/arpa-network/node-client
   pullPolicy: Always
-  tag: "latest"
+  tag: "nightly-025adcd9b589eab4d539c8ee92516458d0e491a1"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -71,7 +71,7 @@ livenessProbe:
   httpGet:
     path: /health
     port: 50081
-  initialDelaySeconds: 1200
+  initialDelaySeconds: 30
   periodSeconds: 30
   timeoutSeconds: 3
   failureThreshold: 2
@@ -102,6 +102,7 @@ sealedSecrets:
       awsSecretAccessKey: ""
 configs:
   config.yml: {}
+
 
 tolerations: []
 affinity: {}
