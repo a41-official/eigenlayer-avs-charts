@@ -41,7 +41,7 @@ spec:
       volumes: 
       - name: config
         configMap:
-          name: arpa-config
+          name: {{ include "arpa.fullname" . }}-config
       - name: node-ecdsa-keystore
         secret:
           secretName: arpa-node-ecdsa-keystore 
