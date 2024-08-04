@@ -24,14 +24,10 @@ spec:
                   valueFrom:
                     secretKeyRef:
                       name: aws-secret
-                      key: aws-access-key-id
+                      key: awsAccessKeyId
                 - name: AWS_SECRET_ACCESS_KEY
                   valueFrom:
                     secretKeyRef:
                       name: aws-secret
-                      key: aws-secret-access-key
+                      key: awsSecretAccessKey
           restartPolicy: OnFailure
-          volumes:
-            - name: arpa-pvc
-              persistentVolumeClaim:
-                claimName: arpa-pvc
