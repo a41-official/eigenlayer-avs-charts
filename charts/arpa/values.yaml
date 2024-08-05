@@ -116,6 +116,4 @@ cronjob:
   s3:
     bucketName: ""
   container:
-    name: arpa-db-backup
-    image: amazon/aws-cli
     mountPath: /app/db

@@ -9,11 +9,12 @@ spec:
       template:
         spec:
           containers:
-            - name: {{ .Values.cronjob.container.name }}
-              image: {{ .Values.cronjob.container.image }}
+            - name: arpa-db-backup
+              image: alpine
               command: ["/bin/sh", "-c"]
               args:
                 - >
+                  apk add --no-cache aws-cli tar &&
                   tar -czf /tmp/db-backup.tar.gz -C {{ .Values.cronjob.container.mountPath }} . &&
                   aws s3 cp /tmp/db-backup.tar.gz s3://{{ .Values.cronjob.s3.bucketName }}/db-backup-$(date +\%F).tar.gz &&
                   rm /tmp/db-backup.tar.gz;
