@@ -72,7 +72,7 @@ helm uninstall arpa -n avs-a41-mainnet
 
 upgrade
 ```
-helm upgrade arpa ./ -f ./values.yaml -n avs-a41-holesky
+helm upgrade a41-hs-arpa  ./ -f ./values.yaml -n avs-a41-holesky
 ```
 
 logs

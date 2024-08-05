@@ -20,6 +20,10 @@ fullnameOverride: ""
 
 serviceMonitor:
   enabled: true
+  interval: 30s
+  scrapeTimeout: 10s
+  path: /health
+  port: statistics-http
 
 serviceAccount:
   create: true
