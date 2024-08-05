@@ -16,7 +16,7 @@ spec:
                 - >
                   apk add --no-cache aws-cli tar &&
                   tar -czf /tmp/db-backup.tar.gz -C {{ .Values.cronjob.container.mountPath }} . &&
-                  aws s3 cp /tmp/db-backup.tar.gz s3://{{ .Values.cronjob.s3.bucketName }}/db-backup-$(date +\%F).tar.gz &&
+                  aws s3 cp /tmp/db-backup.tar.gz s3://{{ .Values.cronjob.s3.bucketName }}/db/db-backup-$(date +\%F).tar.gz &&
                   rm /tmp/db-backup.tar.gz;
               volumeMounts:
                 - name: arpa-pvc
