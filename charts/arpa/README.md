@@ -62,17 +62,17 @@ kubeseal --format yaml --cert mycert.pem -n avs-a41-holesky -f ./secret.yaml > s
 
 install
 ```
-helm install arpa ./ -f ./values.yaml -n avs-a41-mainnet
+helm install arpa ./ -f ./values.yaml -n avs-a41-holesky
 ```
 
 uninstall
 ```
-helm uninstall arpa -n avs-a41-mainnet
+helm uninstall arpa -n avs-a41-holesky
 ```
 
 upgrade
 ```
-helm upgrade a41-hs-arpa  ./ -f ./values.yaml -n avs-a41-holesky
+helm upgrade arpa  ./ -f ./values.yaml -n avs-a41-holesky
 ```
 
 logs
