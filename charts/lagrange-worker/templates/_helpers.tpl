@@ -60,16 +60,3 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
-{{- define "lagrange-worker.serviceMonitorRelabelings" -}}
-{{- if .Values.serviceMonitor.enabled -}}
-- action: replace
-  targetLabel: chain
-  replacement: eigenlayer
-- action: replace
-  targetLabel: avs
-  replacement: lagrange-worker
-- action: replace
-  targetLabel: network
-  replacement: {{ tpl .Values.network $ }}
-{{- end -}}
-{{- end -}}

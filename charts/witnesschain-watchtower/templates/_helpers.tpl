@@ -45,17 +45,3 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 {{- end -}}
 {{- end -}}
-
-{{- define "witnesschain-watchtower.serviceMonitorRelabelings" -}}
-{{- if .Values.serviceMonitor.enabled -}}
-- action: replace
-  targetLabel: chain
-  replacement: eigenlayer
-- action: replace
-  targetLabel: avs
-  replacement: witnesschain-watchtower
-- action: replace
-  targetLabel: network
-  replacement: {{ tpl .Values.network $ }}
-{{- end -}}
-{{- end -}}

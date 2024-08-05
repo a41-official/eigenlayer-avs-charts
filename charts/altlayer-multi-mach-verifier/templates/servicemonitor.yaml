@@ -3,14 +3,14 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "mach-operator.fullname" . }}-servicemonitor
+  name: {{ include "altlayer-multi-mach-verifierr.fullname" . }}-servicemonitor
   labels:
-    {{- include "mach-operator.labels" . | nindent 4 }}
+    {{- include "altlayer-multi-mach-verifierr.labels" . | nindent 4 }}
     {{- toYaml .Values.serviceMonitor.labels | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      {{- include "mach-operator.selectorLabels" . | nindent 6 }}
+      {{- include "altlayer-multi-mach-verifierr.selectorLabels" . | nindent 6 }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}
