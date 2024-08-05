@@ -23,7 +23,7 @@ spec:
       relabelings:
       {{- range $key, $value := .Values.commonLabels }}
       - action: replace
-        targetLabel: {{ $key | regexReplaceAll "^a41.io/" "" }}
+        targetLabel: {{ $key }}
         replacement: {{ $value | quote }}
       {{- end }}
   jobLabel: {{ .Release.Name }}
