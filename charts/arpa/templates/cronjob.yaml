@@ -33,6 +33,6 @@ spec:
                       key: awsSecretAccessKey
           restartPolicy: OnFailure
           volumes:
-            - name: arpa-pvc-{{ include "arpa.fullname" . }}-0
+            - name: arpa-pvc
               persistentVolumeClaim:
-                claimName: arpa-pvc
+                claimName: arpa-pvc-{{ include "arpa.fullname" . }}-0
