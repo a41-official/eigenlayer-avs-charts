@@ -20,8 +20,8 @@ fullnameOverride: ""
 
 serviceMonitor:
   enabled: true
-  interval: 30s
   scrapeTimeout: 10s
+  interval: 30s
   path: /health
   port: statistics-http
 
@@ -116,6 +116,6 @@ cronjob:
   s3:
     bucketName: ""
   container:
-    name: backup-container
+    name: arpa-db-backup
     image: amazon/aws-cli
     mountPath: /app/db
