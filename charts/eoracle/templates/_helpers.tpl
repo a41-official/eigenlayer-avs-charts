@@ -35,6 +35,9 @@ Common labels
 */}}
 {{- define "eoracle.labels" -}}
 helm.sh/chart: {{ include "eoracle.chart" . }}
+{{ if .Values.commonLabels -}}
+{{- toYaml .Values.commonLabels }}
+{{ end -}}
 {{ include "eoracle.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
@@ -60,3 +63,20 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+ServiceMonitor relabelings
+*/}}
+{{- define "eoracle.serviceMonitorRelabelings" -}}
+{{- if .Values.serviceMonitor.enabled -}}
+- action: replace
+  targetLabel: chain
+  replacement: eigenlayer
+- action: replace
+  targetLabel: avs
+  replacement: eoracle
+- action: replace
+  targetLabel: network
+  replacement: {{ tpl .Values.network $ }}
+{{- end -}}
+{{- end -}}
