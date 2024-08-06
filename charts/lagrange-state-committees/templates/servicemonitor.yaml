@@ -2,10 +2,10 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "lagrange-worker.fullname" . }}
+  name: {{ include "lagrange-state-committees.fullname" . }}
   labels:
-    {{- include "lagrange-worker.labels" . | nindent 4 }}
-  {{- with .Values.annotations }}
+    {{- include "lagrange-state-committees.labels" . | nindent 4 }}
+  {{- with .Values.serviceMonitor.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -29,7 +29,7 @@ spec:
   jobLabel: {{ .Release.Name }}
   selector:
     matchLabels:
-      {{- include "lagrange-worker.selectorLabels" . | nindent 6 }}
+      {{- include "lagrange-state-committees.selectorLabels" . | nindent 6 }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}
