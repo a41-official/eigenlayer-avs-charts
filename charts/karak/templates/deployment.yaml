@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "eoracle.fullname" . }}
+  labels:
+    {{- include "eoracle.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "eoracle.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "eoracle.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "eoracle.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: init-keystore
+          image: busybox:1.34.0
+          command:
+            - sh
+            - -c
+            - |
+              cp /keystore/blsEncryptedWallet.json /app/{{ .Values.env.EO_KEYSTORE_PATH }}/blsEncryptedWallet.json;
+              cp /keystore/ecdsaAliasedEncryptedWallet.json /app/{{ .Values.env.EO_KEYSTORE_PATH }}/ecdsaAliasedEncryptedWallet.json;
+              echo "Copied Path: {{ .Values.env.EO_KEYSTORE_PATH }}";
+          volumeMounts:
+            - name: keystore
+              mountPath: /app/{{ .Values.env.EO_KEYSTORE_PATH }}
+            - name: bls-key
+              mountPath: /keystore/blsEncryptedWallet.json
+              subPath: keystore.json
+            - name: ecdsa-aliased-key
+              mountPath: /keystore/ecdsaAliasedEncryptedWallet.json
+              subPath: keystore.json
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            - name: EO_PASSPHRASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.passphrase }}
+                  key: password
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.env.EO_PROMETHEUS_PORT }}
+            - name: health
+              containerPort: {{ .Values.env.EO_HEALTH_ENDPOINTS_PORT }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: keystore
+              mountPath: /app/{{ .Values.env.EO_KEYSTORE_PATH }}
+      volumes:
+        - name: keystore
+          emptyDir: {}
+        - name: bls-key
+          secret:
+            secretName: {{ .Values.secrets.blsKey }}
+        - name: ecdsa-aliased-key
+          secret:
+            secretName: {{ .Values.secrets.ecdsaAliasedKey }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
