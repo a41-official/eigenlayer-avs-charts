@@ -56,6 +56,13 @@ spec:
             - name: zkmr-params
               mountPath: /zkmr_params
           command: ["worker", "--config", "/config/worker-conf.toml"]
+          resources:
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
       volumes:
         - name: config
           emptyDir: {}
