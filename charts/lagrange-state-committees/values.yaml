@@ -12,6 +12,20 @@ serviceAccount:
   create: true
   name: ""
 
+## Service monitor to use
+##
+serviceMonitor:
+  # If true, create a serviceMonitor
+  enabled: true
+  # Annotations
+  annotations: {}
+  # Path to scrape
+  path: /metrics
+  # Scrape interval
+  interval: 1m
+  # Scrape timeout
+  scrapeTimeout: 30s
+
 image:
   repository: lagrangelabs/lagrange-node
   pullPolicy: IfNotPresent
