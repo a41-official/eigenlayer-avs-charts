@@ -80,7 +80,9 @@ data:
   {{- end }}
 
   # EigenDA mounted locations
+  {{- if .Values.secrets.ecdsaKeystore }}
   NODE_ECDSA_KEY_FILE: /app/.eigenlayer/operator_keys/ecdsa.key.json
+  {{- end }}
   NODE_BLS_KEY_FILE: /app/.eigenlayer/operator_keys/bls.key.json
   NODE_G1_PATH: /data/g1.point
   NODE_G2_POWER_OF_2_PATH: /data/g2.point.powerOf2

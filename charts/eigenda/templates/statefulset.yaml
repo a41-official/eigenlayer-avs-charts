@@ -68,9 +68,11 @@ spec:
             - name: bls-keystore
               mountPath: /app/.eigenlayer/operator_keys/bls.key.json
               subPath: keystore.json
+            {{- if .Values.secrets.ecdsaKeystore }}
             - name: ecdsa-keystore
               mountPath: /app/.eigenlayer/operator_keys/ecdsa.key.json
               subPath: keystore.json
+            {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ include "eigenda.fullname" . }}-node-env
@@ -84,11 +86,13 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.secrets.blsKeystorePassword }}
                   key: password
+            {{- if .Values.secrets.ecdsaKeystore }}
             - name: NODE_ECDSA_KEY_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.secrets.ecdsaKeystorePassword }}
                   key: password
+            {{- end }}
         {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -141,9 +145,11 @@ spec:
             - name: bls-keystore
               mountPath: /app/.eigenlayer/operator_keys/bls.key.json
               subPath: keystore.json
+            {{- if .Values.secrets.ecdsaKeystore }}
             - name: ecdsa-keystore
               mountPath: /app/.eigenlayer/operator_keys/ecdsa.key.json
               subPath: keystore.json
+            {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ include "eigenda.fullname" . }}-node-env
@@ -153,11 +159,13 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.secrets.blsKeystorePassword }}
                   key: password
+            {{- if .Values.secrets.ecdsaKeystore }}
             - name: NODE_ECDSA_KEY_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.secrets.ecdsaKeystorePassword }}
                   key: password
+            {{- end }}
           {{- if .Values.node.env }}
             {{- toYaml .Values.node.env | nindent 12 }}
           {{- end }}
@@ -217,9 +225,11 @@ spec:
         - name: bls-keystore
           secret:
             secretName: {{ .Values.secrets.blsKeystore }}
+        {{- if .Values.secrets.ecdsaKeystore }}
         - name: ecdsa-keystore
           secret:
             secretName: {{ .Values.secrets.ecdsaKeystore }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
