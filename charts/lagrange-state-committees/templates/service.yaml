@@ -13,6 +13,6 @@ spec:
     - port: {{ .Values.service.port }}
       targetPort: 8080
       protocol: TCP
-      name: http
+      name: metrics
   selector:
     app: {{ include "lagrange-state-committees.name" . }}
