@@ -76,6 +76,7 @@ metricsPort: 9092
 service:
   type: LoadBalancer
   loadBalancerIP: ""
+  externalTrafficPolicy: ""
   annotations:
     metallb.universe.tf/allow-shared-ip: "{{ .Release.Namespace }}"
 
