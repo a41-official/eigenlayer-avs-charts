@@ -15,4 +15,4 @@ spec:
       protocol: TCP
       name: metrics
   selector:
-    app: {{ include "lagrange-state-committees.name" . }}
+    {{- include "lagrange-state-committees.selectorLabels" . | nindent 4 }}
