@@ -118,6 +118,9 @@ network: holesky
 # RPC configuration
 ethRpcUrl: "https://ethereum-holesky-rpc.publicnode.com"
 
+# Node hostname
+nodeHostname: ""
+
 # EigenDA quorum id list
 # This is a dummy value for now. This won't be used as we are explicitly asking for quorum while opting in/out
 # In future release, this will be removed

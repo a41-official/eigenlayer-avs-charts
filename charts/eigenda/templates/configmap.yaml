@@ -131,7 +131,7 @@ data:
   ####### TODO: Operators please update below values for your node ##############
   ###############################################################################
   # TODO: IP of your node
-  NODE_HOSTNAME: {{ .Values.service.loadBalancerIP }}
+  NODE_HOSTNAME: {{ .Values.nodeHostname | default .Values.service.loadBalancerIP }}
 
   # TODO: Operators need to point this to a working chain rpc
   NODE_CHAIN_RPC: {{ .Values.ethRpcUrl }}
