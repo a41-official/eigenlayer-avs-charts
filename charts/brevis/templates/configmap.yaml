@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "brevis.fullname" . }}
+  labels:
+    {{- include "brevis.labels" . | nindent 4 }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+data:
+  brevis.toml: |-
+    {{- .Values.clientConfig.toml | nindent 4  }}

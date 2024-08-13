@@ -1,0 +1,11 @@
+apiVersion: v2
+version: 0.1.0
+type: application
+name: brevis
+description: Brevis operator helm charts
+sources:
+  - https://github.com/brevis-network/brevis-avs
+home: https://brevis.network/
+maintainers:
+  - name: Snow Park
+    email: sinabro2dev@gmail.com

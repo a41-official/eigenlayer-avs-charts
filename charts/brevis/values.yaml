@@ -1,0 +1,161 @@
+# Default values for brevis.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## Provide a name in place of for `app` labels
+##
+nameOverride: ""
+
+## Provide a name to substitute for the full names of resources
+##
+fullnameOverride: ""
+
+## Common labels
+##
+commonLabels: {}
+
+## Annotations
+##
+annotations: {}
+
+## Number of replicas
+##
+replicas: 1
+
+## Affinity configuration for pods
+##
+affinity: {}
+
+## Tolerations for pods
+##
+tolerations: []
+
+## Security context for pods
+##
+securityContext: {}
+
+## Security context for containers
+##
+containerSecurityContext: {}
+
+## Node selector for pods
+##
+nodeSelector: {}
+
+## Resource requests and limits
+##
+resources: {}
+
+## Image pull secrets for docker images
+##
+imagePullSecrets: []
+
+## Image of brevis
+##
+image:
+  ## Brevos container image repository
+  ##
+  repository: a41ventures/brevis-avs
+
+  ## Brevis container iamge tag
+  ##
+  tag: latest
+
+  ## Brevis container pull policy
+  ##
+  pullPolicy: IfNotPresent
+
+## Liveness probe
+##
+livenessProbe:
+  httpGet:
+    port: 8081
+    path: /eigen/node/health
+  initialDelaySeconds: 60
+  periodSeconds: 30
+  timeoutSeconds: 3
+  failureThreshold: 2
+  successThreshold: 1
+
+## Readiness probe
+##
+readinessProbe:
+  httpGet:
+    port: 8081
+    path: /eigen/node/health
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 3
+  successThreshold: 1
+
+## Service configuration
+##
+service:
+  ## Service type
+  ##
+  type: ClusterIP
+
+  ## LoadBalancer IP
+  ##
+  loadBalancerIP: ""
+
+  ## External traffic policy
+  ##
+  externalTrafficPolicy: Cluster
+
+## Service account to use
+##
+serviceAccount:
+  ## Specifies whether a service account should be created
+  ##
+  create: false
+
+  ## Name of the service account to use
+  ##
+  name: ""
+
+## Additional env variables
+##
+extraEnv: []
+
+## Additional volume mounts
+##
+extraVolumeMounts: []
+
+## Secrets for brevis
+##
+secretNames:
+  ## Secret name for eigenlayer operator bls keystore
+  ##
+  eigenBlsKeystore: ""
+
+  ## Secret name for eigenlayer operator bls keystore password
+  ##
+  eigenBlsKeystorePassword: ""
+
+## Brevis client configuration
+##
+clientConfig:
+  toml: |-
+    # per chain config
+    [[multichain]]
+    chainID = 0
+    name = ""
+    gateway = ""
+    BlkInterval = 0
+    BlkDelay = 0
+    Brevis = ""
+    BrvEigen = ""
+    BrvRegCo = ""
+    AVSDir = ""
+
+    # brevis gateway, will post sig to here
+    bgw = ""
+
+    # EigenLayer operator ID
+    operID = ""
+
+    # BLS key for eigenlayer
+    blspath = ""
+    blspwd = ""
