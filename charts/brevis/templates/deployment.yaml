@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "brevis.fullname" . }}
+  labels:
+    {{- include "brevis.labels" . | nindent 4 }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      {{- include "brevis.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "brevis.selectorLabels" . | nindent 8 }}
+      {{- with .Values.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ include "brevis.serviceAccountName" . }}
+      {{- with .Values.securityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+        - name: init-client-config
+          image: alpine:latest
+          command:
+            - sh
+            - -c
+            - |
+              password=$(cat /app/init/secret/eigen-bls-keystore.txt);
+              cp /app/init/config/brevis.toml /app/config/brevis.toml;
+              echo -e "\nblspath = \"/app/.key/eigen-bls-keystore.json\"\nblspwd = \"$password\"" >> /app/config/brevis.toml;
+              echo "Initialized brevis configs";
+          volumeMounts:
+            - name: eigen-bls-keystore-password
+              mountPath: /app/init/secret
+            - name: init-config
+              mountPath: /app/init/config
+            - name: client-config
+              mountPath: /app/config
+      containers:
+        - name: {{ include "brevis.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - run
+            - --config
+            - /app/config/brevis.toml
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+          {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: eigen-bls-keystore
+              mountPath: /app/.key/eigen-bls-keystore.json
+              subPath: eigen-bls-keystore.json
+              readOnly: true
+            - name: client-config
+              mountPath: /app/config/brevis.toml
+              subPath: brevis.toml
+              readOnly: true
+          {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: eigen-bls-keystore
+          secret:
+            secretName: {{ .Values.secretNames.eigenBlsKeystore }}
+            items:
+              - key: keystore.json
+                path: eigen-bls-keystore.json
+        - name: eigen-bls-keystore-password
+          secret:
+            secretName: {{ .Values.secretNames.eigenBlsKeystorePassword }}
+            items:
+              - key: password
+                path: eigen-bls-keystore.txt
+        - name: init-config
+          configMap:
+            name: {{ include "brevis.fullname" . }}
+        - name: client-config
+          emptyDir: {}
