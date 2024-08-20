@@ -1,39 +1,32 @@
-# Default values for eoracle.
+# Default values for karak.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: eoracle/data-validator
-  pullPolicy: IfNotPresent
-  tag: "v0.1.8"
+  repository: a41ventures/karak
+  pullPolicy: IfNotPresent 
+  tag: "latest"
 
 ## Common labels
 ##
 commonLabels: {}
 
 ## Network to which the client is connected
-network: holesky
+network: testnet
 
 env:
-  EO_CHAIN_RPC_ENDPOINT: https://rpc.testnet.eoracle.network
-  EO_CHAIN_WS_ENDPOINT: wss://rpc.testnet.eoracle.network/ws
-  EO_REGISTRY_COORDINATOR: "0xc4A6E362e8Bd89F28Eb405F9Aa533784884B9c4F"
-  EO_STAKE_REGISTRY: "0xdda1a381920971642477CA79F5BFc1515414782d"
-  EO_AGGREGATOR_ADDRESS: "0x6B0BE2aaD42612803c9Fc389A3806EF21E8cbDb6"
-  EO_CONFIG_ADDRESS: "0xf735Ad57952906a672eEEaDbef3bC69ECD24E50C"
-  ETH_RPC_ENDPOINT: https://ethereum-holesky-rpc.publicnode.com
-  ETHEREUM_FEED_RPC_ENDPOINT: https://ethereum-holesky-rpc.publicnode.com
-  EO_KEYSTORE_PATH: .keystore
-  EO_PROMETHEUS_PORT: "10004"
-  EO_HEALTH_ENDPOINTS_PORT: "10003"
-  EO_LOGGING_LEVEL: info
+  AGGREGATOR_URL: https://aggregator-example.dss.karak.network
+  HOST: 0.0.0.0 # must be overrided
+  PORT: 0000 # must be override
+  RPC_URL: https://rpc.ankr.com/eth_sepolia/784ac3fdefe6a9e0a7f235a2e4f30014f066d17fba1802620792a0a11727e173
+  DSS_CONTRACT_ADDRESS: 0x9bE435eD8E39a96EF4901cFfFbA4e0ff4321e710
 
 secrets:
-  blsKey: ""
-  ecdsaAliasedKey: ""
-  passphrase: ""
+  blsSecretKey: ""
+  validatorPrivateKey: ""
+
 
 
 imagePullSecrets: []
@@ -41,7 +34,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
-  create: true
+  create: false
   automount: true
   annotations: {}
   name: ""
@@ -50,7 +43,7 @@ serviceAccount:
 ##
 serviceMonitor:
   # If true, create a serviceMonitor
-  enabled: true
+  enabled: false
   # Annotations
   annotations: {}
   # Path to scrape
@@ -68,7 +61,18 @@ podSecurityContext: {}
 #   runAsGroup: 65534
 
 
-service: {}
+service:
+  type: LoadBalancer
+  loadBalancerIP: ""
+  annotations:
+    metallb.universe.tf/allow-shared-ip: "key-to-share-121.138.74.22"
+  ports: #외부 노출할 포트 (internal cluster)
+    - name: http-port
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+
+
 resources: {}
 
 livenessProbe:

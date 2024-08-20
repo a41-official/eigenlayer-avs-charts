@@ -2,9 +2,9 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "eoracle.fullname" . }}
+  name: {{ include "karak.fullname" . }}
   labels:
-    {{- include "eoracle.labels" . | nindent 4 }}
+    {{- include "karak.labels" . | nindent 4 }}
   {{- with .Values.serviceMonitor.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -21,11 +21,11 @@ spec:
         {{- . | nindent 8 }}
       {{- end }}
       relabelings:
-        {{- include "eoracle.serviceMonitorRelabelings" . | nindent 8 }}
+        {{- include "karak.serviceMonitorRelabelings" . | nindent 8 }}
   jobLabel: {{ .Release.Name }}
   selector:
     matchLabels:
-      {{- include "eoracle.selectorLabels" . | nindent 6 }}
+      {{- include "karak.selectorLabels" . | nindent 6 }}
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}
