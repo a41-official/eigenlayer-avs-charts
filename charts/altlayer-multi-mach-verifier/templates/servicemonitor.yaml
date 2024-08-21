@@ -20,7 +20,7 @@ spec:
       interval: {{ $.Values.serviceMonitor.interval }}
       path: {{ .path }}
       relabelings:
-      {{- range $key, $value := .Values.commonLabels }}
+      {{- range $key, $value := $.Values.commonLabels }}
       - action: replace
         targetLabel: {{ $key | trimPrefix "a41.io/" | quote }}
         replacement: {{ $value | quote }}
