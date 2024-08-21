@@ -3,7 +3,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "altlayer-multi-mach-operator.fullname" . }}-servicemonitor
+  name: {{ include "altlayer-multi-mach-operator.fullname" . }}
   labels:
     {{- include "altlayer-multi-mach-operator.labels" . | nindent 4 }}
 spec:
@@ -13,6 +13,7 @@ spec:
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}
+  jobLabel: {{ .Release.Name }}
   endpoints:
   {{- range .Values.serviceMonitor.ports }}
     - port: {{ .name }}
