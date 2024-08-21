@@ -18,6 +18,7 @@ spec:
     - port: {{ .name }}
       interval: {{ $.Values.serviceMonitor.interval }}
       path: {{ .path }}
+      honorLabels: true
       relabelings:
       {{- range $key, $value := .Values.commonLabels }}
       - action: replace
