@@ -25,6 +25,13 @@ service:
       protocol: TCP
       targetPort: proxy-api
 
+serviceMonitor:
+  enabled: true
+  interval: 30s
+  ports:
+    - name: metrics
+      path: /metrics
+
 secrets:
   blsKey: ""
   blsKeyPassword: ""

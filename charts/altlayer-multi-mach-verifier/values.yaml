@@ -24,6 +24,13 @@ ingress:
   enabled: false
   host: example.com
 
+serviceMonitor:
+  enabled: true
+  interval: 30s
+  ports:
+    - name: metrics
+      path: /metrics
+
 configs:
   mach-config.toml: |
     ##############################################
