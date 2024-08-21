@@ -7,10 +7,10 @@
 # 7. SECRETS
 
 # META 
+commonLabels: {}
 nameOverride: ""
 fullnameOverride: ""
 replicaCount: 1
-labels: {}
 imagePullSecrets: []
 nodeSelector: {}
 tolerations: []
@@ -41,8 +41,6 @@ service:
 # SERVICE MONITOR
 serviceMonitor:
   enabled: true
-  labels:
-    release: prometheus
   interval: 30s
   ports:
     - name: eigen-metrics

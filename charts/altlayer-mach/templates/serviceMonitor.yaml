@@ -6,7 +6,6 @@ metadata:
   name: {{ include "mach-operator.fullname" . }}-servicemonitor
   labels:
     {{- include "mach-operator.labels" . | nindent 4 }}
-    {{- toYaml .Values.serviceMonitor.labels | nindent 4 }}
 spec:
   selector:
     matchLabels:
@@ -20,7 +19,7 @@ spec:
       interval: {{ $.Values.serviceMonitor.interval }}
       path: {{ .path }}
       relabelings:
-      {{- range $key, $value := .Values.labels }}
+      {{- range $key, $value := .Values.commonLabels }}
       - action: replace
         targetLabel: {{ $key | trimPrefix "a41.io/" | quote }}
         replacement: {{ $value | quote }}

@@ -4,9 +4,6 @@ metadata:
   name: {{ include "eigenda.fullname" . }}
   labels:
     {{- include "eigenda.labels" . | nindent 4 }}
-    {{- with .Values.labels }}
-    {{- toYaml . | nindent 4 }}
-    {{- end}}
 spec:
   serviceName: {{ include "eigenda.fullname" . }}
   replicas: 1
@@ -23,9 +20,6 @@ spec:
   selector:
     matchLabels:
       {{- include "eigenda.selectorLabels" . | nindent 6 }}
-      {{- with .Values.labels }}
-      {{- toYaml . | nindent 6 }}
-      {{- end}}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -35,9 +29,6 @@ spec:
       labels:
         app: {{ include "eigenda.fullname" . }}
         {{- include "eigenda.selectorLabels" . | nindent 8 }}
-        {{- with .Values.labels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end}}
     spec:
       initContainers:
         - name: init-srs

@@ -21,7 +21,4 @@ spec:
     targetPort: {{ .targetPort }}
   {{- end }}
   selector:
-    {{- with .Values.labels }}
-      {{- toYaml . | nindent 4 }}
-    {{- end}}
-    app: {{ include "mach-operator.fullname" . }}
+    {{- include "mach-operator.selectorLabels" . | nindent 4 }}

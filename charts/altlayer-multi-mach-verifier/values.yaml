@@ -7,7 +7,7 @@ podSecurityContext: {}
 # fsGroup: 2000
 securityContext: {}
 
-labels: {}
+commonLabels: {}
 
 imagePullSecrets: []
 service:

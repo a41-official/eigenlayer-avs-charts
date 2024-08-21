@@ -4,18 +4,12 @@ metadata:
   name: {{ include "altlayer-multi-mach-verifier.fullname" . }}
   labels:
     {{- include "altlayer-multi-mach-verifier.labels" . | nindent 4 }}
-    {{- with .Values.labels }}
-    {{- toYaml . | nindent 4 }}
-    {{- end}}
 spec:
   serviceName: {{ include "altlayer-multi-mach-verifier.fullname" . }}
   replicas: 1
   selector:
     matchLabels:
       {{- include "altlayer-multi-mach-verifier.selectorLabels" . | nindent 6 }}
-        {{- with .Values.labels }}
-        {{- toYaml . | nindent 6 }}
-        {{- end}}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -25,9 +19,6 @@ spec:
       labels:
         app: {{ include "altlayer-multi-mach-verifier.fullname" . }}
         {{- include "altlayer-multi-mach-verifier.selectorLabels" . | nindent 8 }}
-        {{- with .Values.labels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end}}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
