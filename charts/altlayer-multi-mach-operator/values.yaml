@@ -20,6 +20,10 @@ service:
       port: 9091
       protocol: TCP
       targetPort: node-api
+    - name: metrics
+      port: 9092
+      protocol: TCP
+      targetPort: metrics
     - name: proxy-api
       port: 8902
       protocol: TCP
