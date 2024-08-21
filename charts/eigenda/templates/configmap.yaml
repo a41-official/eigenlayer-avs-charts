@@ -24,7 +24,7 @@ data:
             limit_req zone=ip burst=${BURST_LIMIT} nodelay;
             limit_req_status 429;
             proxy_set_header X-Real-IP $remote_addr;
-            proxy_pass http://${NODE_HOST}:${NODE_API_PORT};
+            proxy_pass http://${NODE_HOST}:${NODE_INTERNAL_API_PORT};
         }
     }
 ---
@@ -36,7 +36,8 @@ data:
   REQUEST_LIMIT: "10r/s"
   BURST_LIMIT: "50"
   NODE_HOST: localhost
-  NODE_API_PORT: {{ .Values.nodeApiPort | quote }}
+  NODE_API_PORT: {{ .Values.apiPort | quote }}
+  NODE_INTERNAL_API_PORT: {{ .Values.internalApiPort | quote }}
   NODE_RETRIEVAL_PORT: {{ .Values.retrievalPort | quote }}
   NODE_INTERNAL_RETRIEVAL_PORT: {{ .Values.internalRetrievalPort | quote }}
 ---
@@ -100,7 +101,7 @@ data:
 
   # Node API specific configs
   NODE_ENABLE_NODE_API: "true"
-  NODE_API_PORT: {{ .Values.nodeApiPort | quote }}
+  NODE_API_PORT: {{ .Values.internalApiPort | quote }}
 
   {{- if eq .Values.network "mainnet" }}
   # mainnet smart contracts

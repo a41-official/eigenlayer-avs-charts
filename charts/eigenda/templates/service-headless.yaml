@@ -7,10 +7,10 @@ metadata:
 spec:
   clusterIP: None
   ports:
-    - name: node-api
-      port: {{ .Values.nodeApiPort }}
+    - name: api
+      port: {{ .Values.apiPort }}
       protocol: TCP
-      targetPort: node-api
+      targetPort: api
     - name: metrics
       port: {{ .Values.metricsPort }}
       protocol: TCP

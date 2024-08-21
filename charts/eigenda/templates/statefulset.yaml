@@ -177,9 +177,9 @@ spec:
           - containerPort: {{ .Values.retrievalPort }}
             protocol: TCP
             name: retrieval
-          - containerPort: {{ .Values.nodeApiPort }}
+          - containerPort: {{ .Values.internalApiPort }}
             protocol: TCP
-            name: node-api
+            name: api
           {{- if .Values.lifecycleHooks }}
           lifecycle:
           {{- toYaml .Values.proxy.lifecycleHooks | nindent 12 }}

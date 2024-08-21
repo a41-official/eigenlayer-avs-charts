@@ -67,8 +67,11 @@ retrievalPort: 32004
 # -- Dispersal Port
 dispersalPort: 32005
 
+# -- Node Internal API Port
+internalApiPort: 9090
+
 # -- Node API Port
-nodeApiPort: 9091
+apiPort: 9091
 
 # -- Metrics Port
 metricsPort: 9092
