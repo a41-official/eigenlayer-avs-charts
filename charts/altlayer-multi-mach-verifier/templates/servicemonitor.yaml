@@ -6,7 +6,6 @@ metadata:
   name: {{ include "altlayer-multi-mach-verifier.fullname" . }}-servicemonitor
   labels:
     {{- include "altlayer-multi-mach-verifier.labels" . | nindent 4 }}
-    {{- toYaml .Values.serviceMonitor.labels | nindent 4 }}
 spec:
   selector:
     matchLabels:
