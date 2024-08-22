@@ -120,17 +120,17 @@ spec:
             httpGet:
               path: /metrics
               port: {{ .Values.metricsPort }}
-              timeoutSeconds: 5
+              timeoutSeconds: 10
           readinessProbe:
             httpGet:
               path: /metrics
               port: {{ .Values.metricsPort }}
-              timeoutSeconds: 5
+              timeoutSeconds: 10
           livenessProbe:
             httpGet:
               path: /metrics
               port: {{ .Values.metricsPort }}
-              timeoutSeconds: 5
+              timeoutSeconds: 10
           resources:
             {{- toYaml .Values.node.resources | nindent 12 }}
           volumeMounts:
