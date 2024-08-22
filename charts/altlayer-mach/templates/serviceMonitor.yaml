@@ -21,7 +21,7 @@ spec:
       path: {{ .path }}
       honorLabels: true
       relabelings:
-      {{- range $key, $value := .Values.commonLabels }}
+      {{- range $key, $value := $.Values.commonLabels }}
       - action: replace
         targetLabel: {{ $key | trimPrefix "a41.io/" | quote }}
         replacement: {{ $value | quote }}
