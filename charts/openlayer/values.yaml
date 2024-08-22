@@ -44,9 +44,11 @@ resources:
   limits:
     cpu: 1
     memory: 2Gi
+    ephemeral-storage: "1Gi"
   requests:
     cpu: 1
     memory: 2Gi
+    ephemeral-storage: "1Gi"
 
 # Additional volumes on the output Deployment definition.
 volumes: []
