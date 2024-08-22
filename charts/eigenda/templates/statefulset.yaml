@@ -117,16 +117,21 @@ spec:
           {{- toYaml .Values.node.lifecycleHooks | nindent 12 }}
           {{- end }}
           startupProbe:
+            initialDelaySeconds: 20
+            timeoutSeconds: 3
             httpGet:
               path: /metrics
               port: {{ .Values.metricsPort }}
-              timeoutSeconds: 10
           readinessProbe:
+            initialDelaySeconds: 20
+            timeoutSeconds: 3
             httpGet:
               path: /metrics
               port: {{ .Values.metricsPort }}
               timeoutSeconds: 10
           livenessProbe:
+            initialDelaySeconds: 20
+            timeoutSeconds: 3
             httpGet:
               path: /metrics
               port: {{ .Values.metricsPort }}
