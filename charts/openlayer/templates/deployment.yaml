@@ -1,0 +1,119 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "openlayer.fullname" . }}
+  labels:
+    {{- include "openlayer.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "openlayer.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "openlayer.labels" . | nindent 8 }}
+	      {{- with .Values.podLabels }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "openlayer.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["--config", "./operator-docker-compose.yaml", "start-operator"]
+          env:
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            - name: OPERATOR_BLS_KEY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.blsKeystorePassword }}
+                  key: password
+            {{- if .Values.secrets.ecdsaKeystorePassword }}
+            - name: OPERATOR_ECDSA_KEY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.ecdsaKeystorePassword }}
+                  key: password
+            {{- end }}
+            - name: OPERATOR_SIGNER_ECDSA_KEY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.ecdsaSignerKeystorePassword }}
+                  key: password
+            - name: BLS_PRIVATE_KEY_PATH
+              value: "/app/.key/operator.bls.key.json"
+            - name: ECDSA_PRIVATE_KEY_PATH
+              value: "/app/.key/operator.ecdsa.key.json"
+            - name: ECDSA_SIGNER_PRIVATE_KEY_PATH
+              value: "/app/.key/signer.ecdsa.key.json"
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              subPath: operator-docker-compose.yaml
+              mountPath: /open-oracle/operator-docker-compose.yaml
+            - name: bls-keystore
+              mountPath: /app/.key/operator.bls.key.json
+              subPath: keystore.json
+            {{- if .Values.secrets.ecdsaKeystore }}
+            - name: ecdsa-keystore
+              mountPath: /app/.key/operator.ecdsa.key.json
+              subPath: keystore.json
+            {{- end }}
+            - name: ecdsa-signer-keystore
+              mountPath: /app/.key/signer.ecdsa.key.json
+              subPath: keystore.json
+          {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "openlayer.fullname" . }}-config
+        - name: bls-keystore
+          secret:
+            secretName: {{ .Values.secrets.blsKeystore }}
+        {{- if .Values.secrets.ecdsaKeystore }}
+        - name: ecdsa-keystore
+          secret:
+            secretName: {{ .Values.secrets.ecdsaKeystore }}
+        {{- end }}
+        - name: ecdsa-signer-keystore
+          secret:
+            secretName: {{ .Values.secrets.ecdsaSignerKeystore }}
+      {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
