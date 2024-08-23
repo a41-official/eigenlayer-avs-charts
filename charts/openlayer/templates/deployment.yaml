@@ -46,13 +46,6 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.secrets.blsKeystorePassword }}
                   key: password
-            {{- if .Values.secrets.ecdsaKeystorePassword }}
-            - name: OPERATOR_ECDSA_KEY_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secrets.ecdsaKeystorePassword }}
-                  key: password
-            {{- end }}
             - name: OPERATOR_SIGNER_ECDSA_KEY_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -60,8 +53,6 @@ spec:
                   key: password
             - name: BLS_PRIVATE_KEY_PATH
               value: "/app/.key/operator.bls.key.json"
-            - name: ECDSA_PRIVATE_KEY_PATH
-              value: "/app/.key/operator.ecdsa.key.json"
             - name: ECDSA_SIGNER_PRIVATE_KEY_PATH
               value: "/app/.key/signer.ecdsa.key.json"
           ports:
@@ -77,11 +68,6 @@ spec:
             - name: bls-keystore
               mountPath: /app/.key/operator.bls.key.json
               subPath: keystore.json
-            {{- if .Values.secrets.ecdsaKeystore }}
-            - name: ecdsa-keystore
-              mountPath: /app/.key/operator.ecdsa.key.json
-              subPath: keystore.json
-            {{- end }}
             - name: ecdsa-signer-keystore
               mountPath: /app/.key/signer.ecdsa.key.json
               subPath: keystore.json
@@ -95,11 +81,6 @@ spec:
         - name: bls-keystore
           secret:
             secretName: {{ .Values.secrets.blsKeystore }}
-        {{- if .Values.secrets.ecdsaKeystore }}
-        - name: ecdsa-keystore
-          secret:
-            secretName: {{ .Values.secrets.ecdsaKeystore }}
-        {{- end }}
         - name: ecdsa-signer-keystore
           secret:
             secretName: {{ .Values.secrets.ecdsaSignerKeystore }}
