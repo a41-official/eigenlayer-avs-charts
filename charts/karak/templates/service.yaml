@@ -8,6 +8,7 @@ metadata:
     {{- include "karak.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
   ports:
   {{- range .Values.service.ports }}
   - name: {{ .name }}
@@ -16,7 +17,4 @@ spec:
     targetPort: {{ .targetPort }}
   {{- end }}
   selector:
-    {{- with .Values.labels }}
-      {{- toYaml . | nindent 4 }}
-    {{- end }}
-    app: {{ include "karak.fullname" . }}
+    {{- include "karak.selectorLabels" . | nindent 6 }}
