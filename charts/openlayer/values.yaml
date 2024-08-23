@@ -78,8 +78,6 @@ env:
 secrets:
   blsKeystore: ""
   blsKeystorePassword: ""
-  ecdsaKeystore: ""
-  ecdsaKeystorePassword: ""
   ecdsaSignerKeystore: ""
   ecdsaSignerKeystorePassword: ""
 
