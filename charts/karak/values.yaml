@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: a41ventures/karak
-  pullPolicy: IfNotPresent 
+  pullPolicy: Always
   tag: "latest"
 
 ## Common labels
@@ -65,7 +65,7 @@ service:
   type: LoadBalancer
   loadBalancerIP: ""
   annotations:
-    metallb.universe.tf/allow-shared-ip: "key-to-share-121.138.74.22"
+    metallb.universe.tf/allow-shared-ip: "{{ .Release.Namespace }}"
   ports: #외부 노출할 포트 (internal cluster)
     - name: http-port
       port: 8080
@@ -74,15 +74,6 @@ service:
 
 
 resources: {}
-
-livenessProbe:
-  httpGet:
-    path: /metrics
-    port: metrics
-readinessProbe:
-  httpGet:
-    path: /metrics
-    port: metrics
 
 volumes: []
 
