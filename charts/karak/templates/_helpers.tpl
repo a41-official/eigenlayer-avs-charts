@@ -64,19 +64,19 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
-{{/*
-ServiceMonitor relabelings
-*/}}
-{{- define "karak.serviceMonitorRelabelings" -}}
-{{- if .Values.serviceMonitor.enabled -}}
-- action: replace
-  targetLabel: chain
-  replacement: karak
-- action: replace
-  targetLabel: avs
-  replacement: karak
-- action: replace
-  targetLabel: network
-  replacement: {{ tpl .Values.network $ }}
-{{- end -}}
-{{- end -}}
+### {{/*
+### ServiceMonitor relabelings
+### */}}
+### {{- define "karak.serviceMonitorRelabelings" -}}
+### {{- if .Values.serviceMonitor.enabled -}}
+### - action: replace
+###   targetLabel: chain
+###   replacement: karak
+### - action: replace
+###   targetLabel: avs
+###   replacement: karak
+### - action: replace
+###   targetLabel: network
+###   replacement: {{ tpl .Values.network $ }}
+### {{- end -}}
+### {{- end -}}
