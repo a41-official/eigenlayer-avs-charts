@@ -17,4 +17,4 @@ spec:
     targetPort: {{ .targetPort }}
   {{- end }}
   selector:
-    {{- include "karak.selectorLabels" . | nindent 6 }}
+    {{- include "karak.selectorLabels" . | nindent 4 }}
