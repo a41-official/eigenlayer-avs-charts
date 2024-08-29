@@ -3,6 +3,6 @@
 .idea
 .vscode
 .DS_Store
-secret.yaml
-sealedSecret.yaml
+secret*
+sealedSecret*
 mycert.pem

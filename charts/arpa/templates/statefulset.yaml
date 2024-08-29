@@ -51,15 +51,22 @@ spec:
       initContainers:
         - name: init-s3-download
           image: alpine
+          env:
+          - name: NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
           command: ["/bin/sh", "-c"]
           args:
           - >
             apk add --no-cache aws-cli tar &&
-            BUCKET={{ if eq .Values.network "mainnet" }}avs-arpa-mainnet{{ else }}avs-arpa-holesky{{ end }} &&
+            BUCKET={{ .Values.cronjob.s3.bucketName }} &&
             FILE=$(aws s3 ls s3://$BUCKET/db/ --recursive | sort | tail -n 1 | awk '{print $4}') &&
-            aws s3 cp s3://$BUCKET/$FILE /tmp/db-backup.tar.gz &&
+            if [ -z "$FILE" ]; then echo "No file found, exiting."; exit 0; fi &&
+            OUTPUT_FILE=/tmp/db-backup.tar.gz &&
+            aws s3 cp s3://$BUCKET/$FILE $OUTPUT_FILE &&
             [ -d /app/db ] || mkdir -p /app/db &&
-            tar -xzf /tmp/db-backup.tar.gz -C /app/db;
+            tar -xzf $OUTPUT_FILE -C /app/db;
           volumeMounts:
             - name: arpa-pvc
               mountPath: /app/db
