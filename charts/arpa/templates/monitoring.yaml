@@ -1,0 +1,64 @@
+{{- if .Values.exporter.enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "arpa.fullname" . }}-exporter-config
+  labels:
+    app: {{ include "arpa.name" . }}-exporter
+data:
+  exporter-config.yml: |
+    node_address: "{{ .Values.exporter.config.node_address }}"
+    l1_chain_id: "{{ .Values.exporter.config.l1_chain_id }}"
+    provider_endpoint: "{{ .Values.exporter.config.provider_endpoint }}"
+    interval: {{ .Values.exporter.config.interval }}
+    exporter_port: {{ .Values.exporter.config.exporter_port }}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "arpa.fullname" . }}-exporter
+  labels:
+    app: {{ include "arpa.name" . }}-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "arpa.name" . }}-exporter
+  template:
+    metadata:
+      labels:
+        app: {{ include "arpa.name" . }}-exporter
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-exporter
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.exporter.config.exporter_port }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/exporter-config.yml
+              subPath: exporter-config.yml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "arpa.fullname" . }}-exporter-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "arpa.fullname" . }}-exporter
+  labels:
+    app: {{ include "arpa.name" . }}-exporter
+spec:
+  type: {{ .Values.exporter.service.type }}
+  ports:
+    - port: {{ .Values.exporter.service.port }}
+      targetPort: {{ .Values.exporter.service.port }}
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ include "arpa.name" . }}-exporter
+{{- end }}
