@@ -35,11 +35,12 @@ spec:
         - name: {{ .Chart.Name }}-exporter
           resources: 
             limits:
-                cpu: 100m
-                memory: 128Mi
+              cpu: 100m
+              memory: 128Mi
+              ephemeral-storage: "2Gi"
             requests:
-                cpu: 100m
-                memory: 128Mi
+              cpu: 100m
+              memory: 128Mi
           image: "{{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}"
           imagePullPolicy: {{ .Values.exporter.image.pullPolicy }}
           ports:
