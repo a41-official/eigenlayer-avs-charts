@@ -28,7 +28,8 @@ spec:
           image: "{{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}"
           imagePullPolicy: {{ .Values.exporter.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.exporter.config.exporter_port }}
+            - name: exporter-port
+              containerPort: {{ .Values.exporter.config.exporter_port }}
           volumeMounts:
             - name: config-volume
               mountPath: /app/exporter-config.yml
