@@ -47,19 +47,6 @@ spec:
             - name: config-volume
               mountPath: /app/exporter-config.yml
               subPath: exporter-config.yml
-          livenessProbe:
-            httpGet:
-              path: /metrics
-              port: {{ .Values.exporter.config.exporter_port }}
-            initialDelaySeconds: 10
-            periodSeconds: 3
-          readinessProbe:
-            httpGet:
-              path: /metrics
-              port: {{ .Values.exporter.config.exporter_port }}
-            initialDelaySeconds: 10
-            periodSeconds: 3
-
       volumes:
         - name: config-volume
           configMap:
