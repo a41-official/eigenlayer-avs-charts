@@ -5,15 +5,28 @@ metadata:
   name: {{ include "arpa.fullname" . }}-exporter
   labels:
     app: {{ include "arpa.name" . }}-exporter
+    {{- include "arpa.labels" . | nindent 4 }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ include "arpa.name" . }}-exporter
+      {{- include "arpa.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
         app: {{ include "arpa.name" . }}-exporter
+        {{- include "arpa.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}-exporter
