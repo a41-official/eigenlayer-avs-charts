@@ -1,0 +1,54 @@
+{{- if .Values.exporter.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "arpa.fullname" . }}-exporter
+  labels:
+    app: {{ include "arpa.name" . }}-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "arpa.name" . }}-exporter
+  template:
+    metadata:
+      labels:
+        app: {{ include "arpa.name" . }}-exporter
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-exporter
+          resources: 
+            limits:
+              cpu: 100m
+              memory: 128Mi
+              ephemeral-storage: "2Gi"
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          image: "{{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}"
+          imagePullPolicy: {{ .Values.exporter.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.exporter.config.exporter_port }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/exporter-config.yml
+              subPath: exporter-config.yml
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: {{ .Values.exporter.config.exporter_port }}
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: {{ .Values.exporter.config.exporter_port }}
+            initialDelaySeconds: 3
+            periodSeconds: 3
+
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "arpa.fullname" . }}-exporter-config
+      automountServiceAccountToken: false
+{{- end }}

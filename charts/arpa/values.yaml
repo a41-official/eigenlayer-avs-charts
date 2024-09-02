@@ -12,7 +12,7 @@ nodeSelector:
 image:
   repository: ghcr.io/arpa-network/node-client
   pullPolicy: Always
-  tag: "nightly-025adcd9b589eab4d539c8ee92516458d0e491a1"
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -117,3 +117,19 @@ cronjob:
     bucketName: ""
   container:
     mountPath: /app/db
+
+exporter:
+  enabled: true
+  service: 
+    type: ClusterIP
+    port: 8000
+  config:
+    node_address: ""
+    l1_chain_id: "1"
+    provider_endpoint: ""
+    interval: 30
+    exporter_port: 8000
+  image:
+    repository: ghcr.io/arpa-network/custom-exporter
+    pullPolicy: Always
+    tag: "latest"
