@@ -4,28 +4,15 @@ kind: Deployment
 metadata:
   name: {{ include "arpa.fullname" . }}-exporter
   labels:
-    {{- include "arpa.labels" . | nindent 4 }}
     app: {{ include "arpa.name" . }}-exporter
-  {{- with .Values.annotations }}
-  annotations:
-    {{- toYaml . | nindent 8 }}
-  {{- end }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "arpa.selectorLabels" . | nindent 6 }}
+      app: {{ include "arpa.name" . }}-exporter
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
-        {{- include "arpa.labels" . | nindent 8 }}
-        {{- with .Values.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
         app: {{ include "arpa.name" . }}-exporter
     spec:
       containers:
