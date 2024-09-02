@@ -58,7 +58,7 @@ spec:
     - port: {{ .Values.exporter.service.port }}
       targetPort: {{ .Values.exporter.service.port }}
       protocol: TCP
-      name: exporter-port
+      name: exporter-http
   selector:
     app: {{ include "arpa.name" . }}-exporter
 {{- end }}
