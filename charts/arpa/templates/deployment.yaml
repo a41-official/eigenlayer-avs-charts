@@ -51,13 +51,13 @@ spec:
             httpGet:
               path: /metrics
               port: {{ .Values.exporter.config.exporter_port }}
-            initialDelaySeconds: 3
+            initialDelaySeconds: 10
             periodSeconds: 3
           readinessProbe:
             httpGet:
               path: /metrics
               port: {{ .Values.exporter.config.exporter_port }}
-            initialDelaySeconds: 3
+            initialDelaySeconds: 10
             periodSeconds: 3
 
       volumes:
