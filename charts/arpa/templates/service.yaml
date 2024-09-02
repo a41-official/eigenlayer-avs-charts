@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "arpa.name" . }}-internal
+  labels:
+    {{- include "arpa.labels" . | nindent 4 }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: ClusterIP
+  ports:
+{{- range .Values.internalService.ports }}
+    - name: {{ .name }}
+      port: {{ .port }}
+      targetPort: {{ .targetPort }}
+      protocol: {{ .protocol }}
+{{- end }}
+  selector:
+    app: {{ include "arpa.name" . }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "arpa.name" . }}-external
+  labels:
+    {{- include "arpa.labels" . | nindent 4 }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.externalService.type }}
+  ports:
+{{- range .Values.externalService.ports }}
+    - name: {{ .name }}
+      port: {{ .port }}
+      targetPort: {{ .targetPort }}
+      protocol: {{ .protocol }}
+{{- end }}
+{{- if .Values.externalService.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.externalService.loadBalancerIP }}
+{{- end }}
+  selector:
+    {{- include "arpa.selectorLabels" . | nindent 4 }}
+---
+{{- if .Values.exporter.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "arpa.fullname" . }}-exporter
+  labels:
+    app: {{ include "arpa.name" . }}-exporter
+spec:
+  type: {{ .Values.exporter.service.type }}
+  ports:
+    - port: {{ .Values.exporter.service.port }}
+      targetPort: {{ .Values.exporter.service.port }}
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ include "arpa.name" . }}-exporter
+{{- end }}

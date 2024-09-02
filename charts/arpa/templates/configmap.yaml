@@ -8,3 +8,19 @@ data:
   {{- if .Values.configs }}
     {{- toYaml .Values.configs | nindent 2 }}
   {{- end }}
+---
+{{- if .Values.exporter.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "arpa.fullname" . }}-exporter-config
+  labels:
+    app: {{ include "arpa.name" . }}-exporter
+data:
+  exporter-config.yml: |
+    node_address: "{{ .Values.exporter.config.node_address }}"
+    l1_chain_id: "{{ .Values.exporter.config.l1_chain_id }}"
+    provider_endpoint: "{{ .Values.exporter.config.provider_endpoint }}"
+    interval: {{ .Values.exporter.config.interval }}
+    exporter_port: {{ .Values.exporter.config.exporter_port }}
+{{- end }}    
