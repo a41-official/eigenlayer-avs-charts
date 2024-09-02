@@ -52,6 +52,11 @@ metadata:
   name: {{ include "arpa.fullname" . }}-exporter
   labels:
     app: {{ include "arpa.name" . }}-exporter
+    {{- include "arpa.labels" . | nindent 4 }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.exporter.service.type }}
   ports:
