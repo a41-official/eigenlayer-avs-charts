@@ -4,15 +4,28 @@ kind: Deployment
 metadata:
   name: {{ include "arpa.fullname" . }}-exporter
   labels:
+    {{- include "arpa.labels" . | nindent 4 }}
     app: {{ include "arpa.name" . }}-exporter
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ include "arpa.name" . }}-exporter
+      {{- include "arpa.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
+        {{- include "arpa.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         app: {{ include "arpa.name" . }}-exporter
     spec:
       containers:
@@ -28,7 +41,7 @@ spec:
           image: "{{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}"
           imagePullPolicy: {{ .Values.exporter.image.pullPolicy }}
           ports:
-            - name: exporter-port
+            - name: exporter-http
               containerPort: {{ .Values.exporter.config.exporter_port }}
           volumeMounts:
             - name: config-volume

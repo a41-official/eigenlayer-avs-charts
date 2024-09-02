@@ -11,10 +11,11 @@ metadata:
   {{- end }}
 spec:
   endpoints:
-    - port: {{ .Values.serviceMonitor.port }}
-      path: {{ .Values.serviceMonitor.path }}
-      interval: {{ .Values.serviceMonitor.interval }}
-      scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+  {{- range .Values.serviceMonitor.ports }}
+    - port: {{ .port }}
+      path: {{ .path }}
+      interval: {{ .interval }}
+      scrapeTimeout: {{ .scrapeTimeout }}
       honorLabels: true
       {{- with .Values.serviceMonitor.tlsConfig }}
       tlsConfig:
@@ -26,6 +27,24 @@ spec:
         targetLabel: {{ $key | trimPrefix "a41.io/" | quote }}
         replacement: {{ $value | quote }}
       {{- end }}
+  {{- end }}
+  {{- if .Values.exporter.enabled }}
+    - port: {{ .Values.exporter.serviceMonitor.port }}
+      path: {{ .Values.exporter.serviceMonitor.path }}
+      interval: {{ .Values.exporter.serviceMonitor.interval }}
+      scrapeTimeout: {{ .Values.exporter.serviceMonitor.scrapeTimeout }}
+      honorLabels: true
+      {{- with .Values.serviceMonitor.tlsConfig }}
+      tlsConfig:
+        {{- . | nindent 8 }}
+      {{- end }}
+      relabelings:
+      {{- range $key, $value := .Values.commonLabels }}
+      - action: replace
+        targetLabel: {{ $key | trimPrefix "a41.io/" | quote }}
+        replacement: {{ $value | quote }}
+      {{- end }}
+  {{- end }}
   jobLabel: {{ .Release.Name }}
   selector:
     matchLabels:
