@@ -61,7 +61,7 @@ spec:
   type: {{ .Values.exporter.service.type }}
   ports:
     - port: {{ .Values.exporter.service.port }}
-      targetPort: {{ .Values.exporter.service.port }}
+      targetPort: {{ .Values.exporter.service.targetPort }}
       protocol: TCP
       name: exporter-http
   selector:
