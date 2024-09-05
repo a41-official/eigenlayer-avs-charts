@@ -11,6 +11,8 @@ metadata:
     {{- toYaml . | nindent 8 }}
   {{- end }}
 spec:
+  strategy:
+    type: Recreate
   replicas: 1
   selector:
     matchLabels:

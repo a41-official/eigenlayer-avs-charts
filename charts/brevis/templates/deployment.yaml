@@ -9,6 +9,8 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
+  strategy:
+    type: Recreate
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
