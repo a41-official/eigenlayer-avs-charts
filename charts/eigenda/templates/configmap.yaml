@@ -64,7 +64,7 @@ data:
   NODE_RETRIEVAL_PORT: {{ .Values.retrievalPort | quote }}
   NODE_TIMEOUT: 20s
   NODE_SRS_ORDER: "268435456"
-  NODE_SRS_LOAD: "131072"
+  NODE_SRS_LOAD: "8388608"
 
   # If you are using a reverse proxy in a shared network space, the reverse proxy should listen at $NODE_DISPERSAL_PORT
   # and forward the traffic to $NODE_INTERNAL_DISPERSAL_PORT, and similarly for retrieval. The DA node will register the
