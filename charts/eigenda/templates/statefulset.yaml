@@ -117,9 +117,9 @@ spec:
           {{- toYaml .Values.node.lifecycleHooks | nindent 12 }}
           {{- end }}
           startupProbe:
-            initialDelaySeconds: 20
+            initialDelaySeconds: 60
             periodSeconds: 3
-            timeoutSeconds: 5
+            timeoutSeconds: 30
             failureThreshold: 5
             httpGet:
               path: /metrics
