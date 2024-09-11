@@ -71,6 +71,10 @@ podSecurityContext: {}
 service: {}
 resources: {}
 
+startupProbe:
+  httpGet:
+    path: /metrics
+    port: metrics
 livenessProbe:
   httpGet:
     path: /metrics
