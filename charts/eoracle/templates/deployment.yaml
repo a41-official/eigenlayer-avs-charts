@@ -70,8 +70,6 @@ spec:
               containerPort: {{ .Values.env.EO_PROMETHEUS_PORT }}
             - name: health
               containerPort: {{ .Values.env.EO_HEALTH_ENDPOINTS_PORT }}
-          startupProbe:
-            {{- toYaml .Values.startupProbe | nindent 12 }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
