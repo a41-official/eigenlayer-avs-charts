@@ -16,6 +16,8 @@ spec:
       labels:
         app: {{ include "lagrange-state-committees.fullname" . }}
         {{- include "lagrange-state-committees.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ include "lagrange-state-committees.serviceAccountName" . }}
       nodeSelector:
