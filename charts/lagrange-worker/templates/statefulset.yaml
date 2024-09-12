@@ -18,6 +18,8 @@ spec:
     metadata:
       labels:
         {{- include "lagrange-worker.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ include "lagrange-worker.serviceAccountName" . }}
       nodeSelector:
