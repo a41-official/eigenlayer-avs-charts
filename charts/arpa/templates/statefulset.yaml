@@ -44,7 +44,7 @@ spec:
           name: {{ include "arpa.fullname" . }}-config
       - name: node-ecdsa-keystore
         secret:
-          secretName: arpa-node-ecdsa-keystore 
+          secretName: {{ .Values.secretNames.arpaNodeKey }}
       serviceAccountName: {{ include "arpa.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -75,12 +75,12 @@ spec:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
-                  name: aws-secret
+                  name: {{ .Values.secretNames.arpaAwsSecret }}
                   key: awsAccessKeyId
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: aws-secret
+                  name: {{ .Values.secretNames.arpaAwsSecret }}
                   key: awsSecretAccessKey
       containers:
         - name: {{ .Chart.Name }}
@@ -120,7 +120,7 @@ spec:
             - name: ARPA_NODE_ACCOUNT_KEYSTORE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.sealedSecrets.arpaNodeKeyPassword.name }}
+                  name: {{ .Values.secretNames.arpaNodeKeyPassword }}
                   key: password
       {{- with .Values.nodeSelector }}
       nodeSelector:
