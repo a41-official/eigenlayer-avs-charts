@@ -45,6 +45,8 @@ podLabels: {}
 
 podSecurityContext: {}
 
+podServiceAccountAutomount: false
+
 securityContext: {}
 
 externalService:

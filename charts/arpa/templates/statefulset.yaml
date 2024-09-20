@@ -45,6 +45,7 @@ spec:
       - name: node-ecdsa-keystore
         secret:
           secretName: {{ .Values.secretNames.arpaNodeKey }}
+      automountServiceAccountToken: {{ .Values.podServiceAccountAutomount }}
       serviceAccountName: {{ include "arpa.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
