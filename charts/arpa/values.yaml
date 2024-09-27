@@ -101,20 +101,18 @@ resources:
     cpu: 1000m
     memory: 2048Mi
 
-secretNames:
-  arpaNodeKey: "arpa-node-ecdsa-keystore"
-  arpaNodeKeyPassword: "arpa-node-ecdsa-password"
-  arpaAwsSecret: "arpa-node-aws-secret"
-
 sealedSecrets:
   enabled: true
   arpaNodeKey:
+    name: "arpa-node-ecdsa-keystore"
     encryptedData:
       keystore: ""
   arpaNodeKeyPassword:
+    name: "arpa-node-ecdsa-password"
     encryptedData:
       password: ""
   arpaAwsSecret:
+    name: "arpa-node-aws-secret"
     encryptedData:
       awsAccessKeyId: ""
       awsSecretAccessKey: ""
