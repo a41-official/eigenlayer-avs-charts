@@ -32,14 +32,8 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}-exporter
-          resources: 
-            limits:
-              cpu: 100m
-              memory: 128Mi
-              ephemeral-storage: "2Gi"
-            requests:
-              cpu: 100m
-              memory: 128Mi
+          resources:
+            {{- toYaml .Values.exporter.resources | nindent 12 }}
           image: "{{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}"
           imagePullPolicy: {{ .Values.exporter.image.pullPolicy }}
           ports:

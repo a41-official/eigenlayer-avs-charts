@@ -1,9 +1,10 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: arpa-db-backup-cronjob
+  name: {{ include "arpa.fullname" . }}-db-backup-cronjob
 spec:
   schedule: {{ .Values.cronjob.schedule | quote }}
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
