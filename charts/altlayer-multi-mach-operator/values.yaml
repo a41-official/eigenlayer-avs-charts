@@ -117,6 +117,7 @@ node:
       port: 9092
     initialDelaySeconds: 30
     periodSeconds: 10
+    timeoutSeconds: 30
   readinessProbe:
     httpGet:
       path: /metrics
