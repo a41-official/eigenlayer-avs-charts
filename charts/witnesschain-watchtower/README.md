@@ -18,18 +18,18 @@ Diligence watchtowers are the first line of defense for optimistic rollups. They
 ## Secrets
 - watchtower private key
 ```
-apiVersion: v1
-kind: Secret
-metadata:
-  name: holesky-watchtower-key
-type: Opaque
-data:
-  watchtowerKey: YOUR_WATCHTOWER_KEY_BASE64_ENCODED
+kubectl create secret generic --from-file key witnesschain-watchtower-ecdsa-key -n {{namespace}}
 ```
+- file name should be `key`, as it will be used as filed name. The file contains private key in plain text.
+- secret object name should be `witnesschain-watchtower-ecdsa-key`, only if you don't intent to modify this in value.
+
+
 
 ## ConfigMaps
 - [`watchtower.config.json`](https://raw.githubusercontent.com/witnesschain-com/config/main/watchtower/watchtower.config.json)
 
+
 ## Refernece Links
 - [Official Documentation](https://docs.witnesschain.com)
 - [GitHub Configuration Repo](https://github.com/witnesschain-com/config)
+
