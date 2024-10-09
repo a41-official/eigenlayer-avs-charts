@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: eoracle/data-validator
   pullPolicy: IfNotPresent
-  tag: "v0.1.15"
+  tag: "v0.1.23"
 
 ## Common labels
 ##
@@ -29,7 +29,12 @@ env:
   EO_PROMETHEUS_PORT: "10004"
   EO_HEALTH_ENDPOINTS_PORT: "10003"
   EO_LOGGING_LEVEL: info
-  EO_CCDATA_API_KEY: ""
+  EO_CCDATA_API_KEY: "yourAliasAddress"
+  COINGECKO_BASE_URL: https://coingeckoproxy.eoracle.network/api/v3
+  COINGECKO_API_KEY: ""
+  COINGECKO_IDS: "merlin-s-seal-btc,bitcoin-trc20,bouncebit-btc,bouncebit-usd,solv-btc,wrapped-bitcoin,tether,usd-coin,ethereum,stakestone-ether,pufeth,manta-network,arbitrum,ethena-usde"
+  COINGECKO_SYMBOLS: "m-btc,btct,bbtc,bbusd,SolvBTC,wbtc,usdt,usdc,eth,STONEUSD,pufEUSD,manta,arb,usde"
+  COINGECKO_CURRENCIES: "usd,usd,usd,usd,usd,usd,usd,usd,usd,usd,usd,usd,usd,usd"
   
 secrets:
   blsKey: ""
