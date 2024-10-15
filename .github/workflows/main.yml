@@ -44,6 +44,9 @@ jobs:
       - name: Update Helm repos
         run: helm repo update
 
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.8.0
+
       - name: Install kube-prometheus-stack
         run: helm install prometheus prometheus-community/kube-prometheus-stack
 
@@ -52,9 +55,6 @@ jobs:
 
       # - name: Run chart-testing (lint)
       #   run: ct lint --all
-
-      - name: Create kind cluster
-        uses: helm/kind-action@v1.8.0
 
       - name: Run chart-testing (install)
         run: ct install --all
