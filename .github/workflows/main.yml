@@ -66,11 +66,11 @@ jobs:
         run: kubectl describe nodes
 
       # Install Prometheus
-      - name: Install Prometheus Stack
-        run: |
-          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-          helm repo update
-          helm install prometheus prometheus-community/kube-prometheus-stack
+      # - name: Install Prometheus Stack
+      #   run: |
+      #     helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+      #     helm repo update
+      #     helm install prometheus prometheus-community/kube-prometheus-stack
 
       # Inject Secrets
       - name: Inject dummy keystores as secret
