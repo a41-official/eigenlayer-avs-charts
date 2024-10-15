@@ -20,6 +20,112 @@ verifier:
 serviceMonitor:
   enabled: false
 
+# CONFIGS
+configs:
+  mach-config.toml: |
+    ##############################################
+    # Mach alerter configuration                 #
+    ##############################################
+    [alerter]
+    # Only print the warning log if the alerter is disabled,
+    # Otherwise the alerts will be sent to the Mach AVS Operator
+    # Optional, default value: false
+    enable = true
+    # The JSONRPC endpoint of Mach AVS Operator
+    url = "http://127.0.0.1:8901"
+
+    ##############################################
+    # Mach validator configuration               #
+    ##############################################
+    [validator]
+    # Validate mode: "unsafe", "safe", "strict"?
+    #
+    # "unsafe": Don't execute EVM, return ok directly.
+    # "safe": Execute EVM ，return ok regardless of whether it's right or wrong.
+    # "strict": Execute EVM, return the execution result.
+    #
+    # Optional, default value: "unsafe"
+    mode = "unsafe"
+    # The rate limit of rpc request
+    # Optional, default value: 100ms
+    rpc_rate_ms = 100
+
+    ##############################################
+    # Mach fetcher configuration                 #
+    ##############################################
+    [fetcher]
+    # The JSONRPC endpoint of Optimism node
+    url = "public-endpoint"
+    # The interval (milliseconds) for fetching finalized/latest block of Optimism node
+    # Optional, default value: 1000ms
+    interval_ms = 4000
+
+    ##############################################
+    # Mach scheduler configuration               #
+    ##############################################:
+    [scheduler]
+    # The timeout waiting for verify result.
+    # If it times out, the verify result will be checked again in the next tick.
+    # Optional, default value: 100ms
+    verify_timeout_ms = 100
+
+    ##############################################
+    # Mach prometheus configuration              #
+    ##############################################
+    [prometheus]
+    # The TCP port of Prometheus exporter
+    # Optional, default value: 9094
+    port = 9094
+    # The HTTP URI path for fetching Prometheus metrics
+    # Optional, default value: "/metrics"
+    metrics_path = "/metrics"
+    # The indication if expose Prometheus exporter on all interfaces
+    # true: listen address = "0.0.0.0:port"
+    # false: listen address = "127.0.0.1:port"
+    # Optional, default value: false
+    external = true
+  operator.yaml: |
+    # this sets the logger level (true = info, false = debug)
+    production: true
+
+    # ETH RPC URL
+    eth_rpc_url: "https://ethereum-holesky-rpc.publicnode.com"
+    eth_ws_url: "wss://ethereum-holesky-rpc.publicnode.com"
+
+    # If you running this using eigenlayer CLI and the provided AVS packaging structure,
+    # this should be /operator_keys/bls_key.json as the host path will be asked while running
+    #
+    # We are using bn254 curve for bls keys
+    #
+    # If you are running locally using go run main.go, this should be full path to your local bls key file
+    bls_private_key_store_path: /app/operator_keys/bls_key.json
+    ecdsa_private_key_store_path: /app/operator_keys/ecdsa_key.json
+
+    operator_ecdsa_address: 0xCD3c95F4A56DA66fDE37D119d7746F43E806856F
+
+    # aggregator_server_ip_port_address: https://op-sepolia-aggregator-1.alt.technology
+    aggregator_jsonrpc_server_ip_port_address: https://op-sepolia-aggregator-1.alt.technology
+
+    # avs node spec compliance https://eigen.nethermind.io/docs/spec/intro
+    eigen_metrics_ip_port_address: 0.0.0.0:9092
+    enable_metrics: true
+    node_api_ip_port_address: 0.0.0.0:9091
+    enable_node_api: true
+
+    # EigenLayer Slasher contract address
+
+    # This is the address of the slasher which is deployed in the anvil saved state
+    avs_registry_coordinator_address: 0x1eA7D160d325B289bF981e0D7aB6Bf3261a0FFf2
+    operator_state_retriever_address: 0xBE1c904525910fdB49dB33b4960DF9aC9f603dC7
+
+    operator_server_ip_port_addr: 0.0.0.0:8901
+
+    # the layer1 chain id the avs contracts in
+    layer1_chain_id: 17000
+
+    # the layer2 chain id
+    layer2_chain_id: 11155420
+
 secrets:
   blsKey: "dummy-bls-keystore"
   blsKeyPassword: "dummy-bls-password"
