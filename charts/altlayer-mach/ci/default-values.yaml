@@ -17,6 +17,9 @@ verifier:
       cpu: 500m
       memory: 2Gi
 
+serviceMonitor:
+  enabled: false
+
 secrets:
   blsKey: "dummy-bls-keystore"
   blsKeyPassword: "dummy-bls-password"
