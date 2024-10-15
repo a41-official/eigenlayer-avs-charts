@@ -62,14 +62,23 @@ jobs:
         uses: helm/kind-action@v1.10.0
 
       # Install Prometheus
-      - name: Add prometheus-community repo
-        run: helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+      - name: Install Prometheus Stack
+        run: |
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm repo update
+          helm install prometheus prometheus-community/kube-prometheus-stack
 
-      - name: Update Helm repos
-        run: helm repo update
-
-      - name: Install kube-prometheus-stack
-        run: helm install prometheus prometheus-community/kube-prometheus-stack
+      # Inject Secrets
+      - name: Inject dummy keystores as secret
+        run: |
+          echo -n "${{ secrets.DUMMY_ECDSA_KEYSTORE }}" > keystore.json
+          kubectl create secret generic dummy-ecdsa-keystore --from-file=keystore.json
+          echo -n "${{ secrets.DUMMY_ECDSA_PASSWORD }}" > password
+          kubectl create secret generic dummy-ecdsa-password --from-file=password
+          echo -n "${{ secrets.DUMMY_BLS_KEYSTORE }}" > keystore.json
+          kubectl create secret generic dummy-bls-keystore --from-file=keystore.json
+          echo -n "${{ secrets.DUMMY_BLS_PASSWORD }}" > password
+          kubectl create secret generic dummy-bls-password --from-file=password
 
       # Install Charts
       - name: Run chart-testing (install)
