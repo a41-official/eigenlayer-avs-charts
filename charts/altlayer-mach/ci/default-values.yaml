@@ -1,12 +1,16 @@
 # Leave empty so that CT tests with default values
 
+# Github Action Runner resource limits: https://docs.github.com/ko/actions/writing-workflows/choosing-where-your-workflow-runs/choosing-the-runner-for-a-job#standard-github-hosted-runners-for--private-repositories
+# CPU: 2-core, Memory: 7 GB, Disk: 14 GB
+# Kube System Uses: 950m CPU, 290Mi Memory
+# Available for Helm Test: 1050m CPU, 6.71Gi Memory
 node:
   resources:
     limits:
-      cpu: 800m
+      cpu: 500m
       memory: 2Gi
     requests:
-      cpu: 800m
+      cpu: 500m
       memory: 2Gi
 verifier:
   resources:
