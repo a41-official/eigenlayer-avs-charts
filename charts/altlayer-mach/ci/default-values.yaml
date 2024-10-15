@@ -1,5 +1,22 @@
 # Leave empty so that CT tests with default values
 
+node:
+  resources:
+    limits:
+      cpu: 800m
+      memory: 2Gi
+    requests:
+      cpu: 800m
+      memory: 2Gi
+verifier:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 2Gi
+
 secrets:
   blsKey: "dummy-bls-keystore"
   blsKeyPassword: "dummy-bls-password"
