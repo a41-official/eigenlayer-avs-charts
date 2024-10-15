@@ -1,0 +1,5 @@
+# Leave empty so that CT tests with default values
+
+secrets:
+  blsKey: "dummy-bls-keystore"
+  blsKeyPassword: "dummy-bls-password"
