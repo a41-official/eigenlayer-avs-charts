@@ -61,6 +61,10 @@ jobs:
         if: steps.list-changed.outputs.changed == 'true'
         uses: helm/kind-action@v1.10.0
 
+      # Describe Nodes
+      - name: Describe Nodes
+        run: kubectl describe nodes
+
       # Install Prometheus
       - name: Install Prometheus Stack
         run: |
