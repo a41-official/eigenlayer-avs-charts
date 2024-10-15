@@ -71,13 +71,13 @@ jobs:
       # Inject Secrets
       - name: Inject dummy keystores as secret
         run: |
-          echo -n "${{ secrets.DUMMY_ECDSA_KEYSTORE }}" > keystore.json
+          echo -n '${{ secrets.DUMMY_ECDSA_KEYSTORE }}' > keystore.json
           kubectl create secret generic dummy-ecdsa-keystore --from-file=keystore.json
-          echo -n "${{ secrets.DUMMY_ECDSA_PASSWORD }}" > password
+          echo -n '${{ secrets.DUMMY_ECDSA_PASSWORD }}' > password
           kubectl create secret generic dummy-ecdsa-password --from-file=password
-          echo -n "${{ secrets.DUMMY_BLS_KEYSTORE }}" > keystore.json
+          echo -n '${{ secrets.DUMMY_BLS_KEYSTORE }}' > keystore.json
           kubectl create secret generic dummy-bls-keystore --from-file=keystore.json
-          echo -n "${{ secrets.DUMMY_BLS_PASSWORD }}" > password
+          echo -n '${{ secrets.DUMMY_BLS_PASSWORD }}' > password
           kubectl create secret generic dummy-bls-password --from-file=password
 
       # Install Charts
