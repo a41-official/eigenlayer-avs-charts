@@ -1,4 +1,4 @@
-# Leave empty so that CT tests with default values
+# Test using Cyber Mainnet config
 
 # Github Action Runner resource limits: https://docs.github.com/ko/actions/writing-workflows/choosing-where-your-workflow-runs/choosing-the-runner-for-a-job#standard-github-hosted-runners-for--private-repositories
 # CPU: 2-core, Memory: 7 GB, Disk: 14 GB
