@@ -63,6 +63,7 @@ jobs:
 
       # Describe Nodes
       - name: Describe Nodes
+        if: steps.list-changed.outputs.changed == 'true'
         run: kubectl describe nodes
 
       # Install Prometheus
@@ -74,6 +75,7 @@ jobs:
 
       # Inject Secrets
       - name: Inject dummy keystores as secret
+        if: steps.list-changed.outputs.changed == 'true'
         run: |
           echo -n '${{ secrets.DUMMY_ECDSA_KEYSTORE }}' > keystore.json
           kubectl create secret generic dummy-ecdsa-keystore --from-file=keystore.json
