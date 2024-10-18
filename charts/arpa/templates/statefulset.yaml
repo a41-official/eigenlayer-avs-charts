@@ -124,6 +124,14 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.sealedSecrets.arpaNodeKeyPassword.name }}
                   key: password
+        - name: log-sidecar
+          image: busybox:1.34.0
+          imagePullPolicy: IfNotPresent
+          args: ["/bin/sh", "-c", "tail -f /app/log/node.log"]
+          volumeMounts:
+          - name: arpa-pvc
+            mountPath: "/app/log"
+            subPath: log
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
