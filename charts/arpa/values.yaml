@@ -11,8 +11,7 @@ replicas: 1
 
 network: ""
 
-nodeSelector:
-  a41.io/project: ""
+nodeSelector: {}
 
 image:
   repository: ghcr.io/arpa-network/node-client
