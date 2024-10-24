@@ -22,6 +22,20 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
+## Service monitor to use
+##
+serviceMonitor:
+  # If true, create a serviceMonitor
+  enabled: true
+  # Annotations
+  annotations: {}
+  # Path to scrape
+  path: /metrics
+  # Scrape interval
+  interval: 1m
+  # Scrape timeout
+  scrapeTimeout: 30s
+
 podAnnotations: {}
 podLabels: {}
 
@@ -36,9 +50,20 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-service:
+externalService:
   type: ClusterIP
-  port: 80
+  ports:
+    - name: api
+      port: 9010
+      targetPort: 9010
+      protocol: TCP
+
+internalService:
+  ports:
+    - name: metrics
+      port: 9091
+      targetPort: 9091
+      protocol: TCP
 
 resources:
   limits:
@@ -69,17 +94,21 @@ tolerations: []
 
 affinity: {}
 
-env:
-  OPERATOR_ADDRESS: ""
-  OPERATOR_SIGNATURE_ADDRESS: ""
-  HTTP_RPC_URL: ""
-  WS_RPC_URL: ""
-
 secrets:
   blsKeystore: ""
   blsKeystorePassword: ""
   ecdsaSignerKeystore: ""
   ecdsaSignerKeystorePassword: ""
 
+## Application Config
+
+# -- Environment Variables
+env:
+  OPERATOR_ADDRESS: ""
+  OPERATOR_SIGNATURE_ADDRESS: ""
+  HTTP_RPC_URL: ""
+  WS_RPC_URL: ""
+
+# -- Config
 configs:
   operator-docker-compose.yaml: ""
