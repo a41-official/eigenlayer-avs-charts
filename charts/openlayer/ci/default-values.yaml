@@ -1,0 +1,70 @@
+# Test using holesky config
+
+# Github Action Runner resource limits: https://docs.github.com/ko/actions/writing-workflows/choosing-where-your-workflow-runs/choosing-the-runner-for-a-job#standard-github-hosted-runners-for--private-repositories
+# CPU: 2-core, Memory: 7 GB, Disk: 14 GB
+# Kube System Uses: 950m CPU, 290Mi Memory
+# Available for Helm Test: 1050m CPU, 6.71Gi Memory
+resources:
+  limits:
+    cpu: 500m
+    memory: 2Gi
+  requests:
+    cpu: 500m
+    memory: 2Gi
+
+serviceMonitor:
+  enabled: false
+
+image:
+  tag: latest
+
+env:
+  OPERATOR_ADDRESS: "0xfc31079f7e5b85e1bac742f9c946ccb2c14b01f8"
+  OPERATOR_SIGNATURE_ADDRESS: "0xfc31079f7e5b85e1bac742f9c946ccb2c14b01f8"
+  HTTP_RPC_URL: "https://ethereum-holesky-rpc.publicnode.com"
+  WS_RPC_URL: "wss://ethereum-holesky-rpc.publicnode.com"
+
+secrets:
+  blsKeystore: "dummy-bls-keystore"
+  blsKeystorePassword: "dummy-bls-password"
+  ecdsaKeystore: ""
+  ecdsaKeystorePassword: ""
+  ecdsaSignerKeystore: "dummy-ecdsa-keystore"
+  ecdsaSignerKeystorePassword: "dummy-ecdsa-password"
+
+configs:
+  operator-docker-compose.yaml: |
+    # this sets the logger level (true = info, false = debug)
+    production: true
+
+    # EigenLayer Slasher contract address
+
+    # This is the address of the slasher which is deployed in the anvil saved state
+    # The saved eigenlayer state is located in tests/anvil/eigenlayer-deployed-anvil-state.json
+    avs_registry_coordinator_address: 0xE0315CCaF46A736BFAB173670CBcC97bE65Eb414
+    operator_state_retriever_address: 0x12ddeDbB47340e6702529197cB593204A4aFa318
+
+    # address which the aggregator listens on for operator signed messages
+    aggregator_server_ip_port_address: https://us-central1-openoracle-de73b.cloudfunctions.net/backend_apis_holesky/api/report_result
+    price_config_server_ip_port_address: https://us-central1-openoracle-de73b.cloudfunctions.net/backend_apis_holesky/api/price_feed_config
+    chain_name: eth
+
+    # avs node spec compliance https://eigen.nethermind.io/docs/spec/intro
+    eigen_metrics_ip_port_address: 0.0.0.0:9091
+    enable_metrics: true
+    node_api_ip_port_address: 0.0.0.0:9010
+    enable_node_api: true
+    health_ws_url: ws://104.198.157.50:3033/
+
+    # we need to register the operator on startup when running the docker compose file
+    # because unfortunately we cannot register the operator previously and save it in the anvil json file
+    # This is because anvil only dumps the state, and not the receipt tree, so when we restart anvil with
+    # the registered operator, it's blspubkey registering event with the compendium is not present anymore,
+    # and so the aggregator can't find it.... very annoying
+    register_operator_on_startup: true
+
+    chain_urls:
+      holesky: wss://ws.27fjsns427pxayzevlxb45azq.blockchainnodeengine.com?key=AIzaSyA6MYiLFWozcz_coPxBmL2cLqb6Hcx7pR4
+      base: wss://base-rpc.publicnode.com
+      camptest: wss://ws.camp-network-testnet.gelato.digital
+      basetest: wss://base-sepolia-rpc.publicnode.com
