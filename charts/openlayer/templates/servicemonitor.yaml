@@ -1,0 +1,36 @@
+{{- if .Values.serviceMonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "openlayer.fullname" . }}
+  labels:
+    {{- include "openlayer.labels" . | nindent 4 }}
+  {{- with .Values.serviceMonitor.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  endpoints:
+    - port: metrics
+      path: {{ .Values.serviceMonitor.path }}
+      interval: {{ .Values.serviceMonitor.interval }}
+      scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+      honorLabels: true
+      {{- with .Values.serviceMonitor.tlsConfig }}
+      tlsConfig:
+        {{- . | nindent 8 }}
+      {{- end }}
+      relabelings:
+      {{- range $key, $value := .Values.commonLabels }}
+      - action: replace
+        targetLabel: {{ $key | trimPrefix "a41.io/" | quote }}
+        replacement: {{ $value | quote }}
+      {{- end }}
+  jobLabel: {{ .Release.Name }}
+  selector:
+    matchLabels:
+      {{- include "openlayer.selectorLabels" . | nindent 6 }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{- end -}}

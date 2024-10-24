@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "openlayer.fullname" . }}
+  name: {{ include "openlayer.fullname" . }}-headless
   labels:
     {{- include "openlayer.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.externalService.type }}
+  clusterIP: None
   ports:
-{{- range .Values.externalService.ports }}
+{{- range .Values.internalService.ports }}
     - name: {{ .name }}
       port: {{ .port }}
       targetPort: {{ .targetPort }}

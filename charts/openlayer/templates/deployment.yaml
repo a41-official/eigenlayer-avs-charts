@@ -59,9 +59,14 @@ spec:
             - name: ECDSA_SIGNER_PRIVATE_KEY_PATH
               value: "/app/.key/signer.ecdsa.key.json"
           ports:
-            - name: http
-              containerPort: {{ .Values.service.port }}
-              protocol: TCP
+          {{- range .Values.internalService.ports }}
+            - name: {{ .name }}
+              containerPort: {{ .targetPort }}
+          {{- end }}
+          {{- range .Values.externalService.ports }}
+            - name: {{ .name }}
+              containerPort: {{ .targetPort }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
