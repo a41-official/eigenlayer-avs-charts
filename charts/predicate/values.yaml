@@ -66,6 +66,7 @@ validator:
     limits:
       cpu: 4
       memory: 16Gi
+      ephemeral-storage: "2Gi"
     requests:
       cpu: 4
       memory: 16Gi
