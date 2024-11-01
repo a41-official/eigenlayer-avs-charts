@@ -1,0 +1,30 @@
+
+{{- if .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "predicate.fullname" . }}
+  labels:
+    {{- include "predicate.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "predicate.selectorLabels" . | nindent 6 }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  jobLabel: {{ .Release.Name }}
+  endpoints:
+  {{- range .Values.serviceMonitor.ports }}
+    - port: {{ .name }}
+      interval: {{ $.Values.serviceMonitor.interval }}
+      path: {{ .path }}
+      honorLabels: true
+      relabelings:
+      {{- range $key, $value := $.Values.commonLabels }}
+      - action: replace
+        targetLabel: {{ $key | trimPrefix "a41.io/" | quote }}
+        replacement: {{ $value | quote }}
+      {{- end }}
+  {{- end }}
+{{- end }}
