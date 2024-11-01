@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "predicate.fullname" . }}
+  labels:
+    {{- include "predicate.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ include "predicate.fullname" . }}
+  replicas: 1
+  volumeClaimTemplates:
+    - metadata:
+        name: predicate-pvc
+      spec:
+        accessModes:
+        {{- toYaml .Values.persistence.accessModes | nindent 8 }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size | quote }}
+        storageClassName: {{ .Values.persistence.storageClassName }}
+  selector:
+    matchLabels:
+      {{- include "predicate.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app: {{ include "predicate.fullname" . }}
+        {{- include "predicate.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "predicate.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: validator
+          {{- with .Values.validator.command }}
+          command:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.validator.args }}
+          args:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.validator.image.repository }}:{{ .Values.validator.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.validator.image.pullPolicy }}
+          ports:
+          {{- toYaml .Values.validator.ports | nindent 10 }}
+          {{- if .Values.validator.startupProbe }}
+          startupProbe:
+          {{- toYaml .Values.validator.startupProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.validator.livenessProbe }}
+          livenessProbe:
+            {{- toYaml .Values.validator.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.validator.readinessProbe }}
+          readinessProbe:
+            {{- toYaml .Values.validator.readinessProbe | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.validator.resources | nindent 12 }}
+          volumeMounts:
+            - name: operator-key
+              mountPath: /app/operatorkeys.json
+              subPath: keystore.json
+              readOnly: true
+            - name: predicate-pvc
+              mountPath: /app/data/
+          env:
+            - name: PREDICATE_SIGNING_PRIVATE_KEY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.ecdsaKeystorePassword }}
+                  key: password
+            - name: PREDICATE_SIGNING_PRIVATE_KEY_STORE_PATH
+              value: "/app/operatorkeys.json"
+            - name: DB_PATH
+              value: "/app/data/"
+            - name: ENABLE_LOG_COLOR
+              value: "true"  
+            {{- toYaml .Values.validator.env | nindent 12 }}
+      volumes:
+        - name: operator-key
+          secret:
+            secretName: {{ .Values.secrets.ecdsaKeystore }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -1,0 +1,140 @@
+nameOverride: ""
+fullnameOverride: ""
+
+commonLabels: {}
+
+securityContext: {}
+podSecurityContext: {}
+
+persistence:
+  accessModes:
+  - ReadWriteOnce
+  size: 100Gi
+  storageClassName: "local-path"
+
+podAnnotations: {}
+
+imagePullSecrets: []
+service:
+  type: LoadBalancer
+  loadBalancerIP: ""
+  annotations: {}
+  ports:
+    - name: node-api
+      port: 9091
+      protocol: TCP
+      targetPort: node-api
+    - name: metrics
+      port: 9090
+      protocol: TCP
+      targetPort: metrics
+    - name: task-server
+      port: 9010
+      protocol: TCP
+      targetPort: task-server
+
+serviceMonitor:
+  enabled: true
+  interval: 30s
+  ports:
+    - name: metrics
+      path: /metrics
+
+secrets:
+  ecdsaKeystore: ""
+  ecdsaKeystorePassword: ""
+
+configs: {}
+validator:
+  command: []
+  args: []
+  ports:
+    - containerPort: 9091
+      protocol: TCP
+      name: node-api
+    - containerPort: 9090
+      protocol: TCP
+      name: metrics
+    - containerPort: 9010
+      protocol: TCP
+      name: task-server  
+  image:
+    repository: ghcr.io/predicatelabs/operator
+    pullPolicy: Always
+    tag: v1.0.1
+  resources:
+    limits:
+      cpu: 4
+      memory: 16Gi
+    requests:
+      cpu: 4
+      memory: 16Gi
+  startupProbe:
+    httpGet:
+      path: /metrics
+      port: 9090
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 30
+  readinessProbe:
+    httpGet:
+      path: /metrics
+      port: 9090
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 3
+    failureThreshold: 3
+    successThreshold: 1
+  livenessProbe:
+    httpGet:
+      path: /metrics
+      port: 9090
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    timeoutSeconds: 3
+    failureThreshold: 2
+    successThreshold: 1
+  env:
+    - name: ENVIRONMENT
+      value: "production"
+    - name: SERVICE_MANAGER_CONTRACT
+      value: "0xaCB91045B8bBa06f9026e1A30855B6C4A1c5BaC6"
+    - name: EIGEN_AVS_DIRECTORY_CONTRACT
+      value: "0x135DDa560e946695d6f155dACaFC6f1F25C1F5AF"
+    - name: EIGEN_AVS_NODE_API_SERVER_ENDPOINT
+      value: "0.0.0.0:9091"
+    - name: METRICS_SERVER_ENDPOINT
+      value: "0.0.0.0:9090"
+    - name: INTERNAL_TASK_SERVER_ENDPOINT
+      value: "0.0.0.0:9010"
+    - name: MIDDLEWARE_SERVER_ENDPOINT
+      value: "task.predicate.io:50051"
+    - name: ETH_RPC_URLS
+      value: "http://eth-rpc-mainnet-01-execution-headless.eth-rpc.svc.a41.io:8545,http://nginx-rpc-proxy.app-prod/eth/f3b984c11100438aa3242e00b42f8022dfa03bd3163a5f7f394b4e3aa11734d0"
+    - name: PUBLIC_TASK_SERVER_ENDPOINT
+      value: "0.0.0.0:9010"
+
+tolerations: []
+
+affinity: {}
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+  podAnnotations: {}
+
+  podSecurityContext: {}
+  # fsGroup: 2000
+
+  securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
