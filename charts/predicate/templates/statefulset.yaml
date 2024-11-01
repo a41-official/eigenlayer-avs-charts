@@ -51,7 +51,7 @@ spec:
           {{- end }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.validator.image.repository }}:{{ .Values.validator.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.validator.image.repository }}:{{ .Values.validator.image.tag }}"
           imagePullPolicy: {{ .Values.validator.image.pullPolicy }}
           ports:
           {{- toYaml .Values.validator.ports | nindent 10 }}

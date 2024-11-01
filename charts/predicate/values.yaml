@@ -40,6 +40,9 @@ serviceMonitor:
     - name: metrics
       path: /metrics
 
+nodeSelector:
+  a41.io/project: ""
+
 secrets:
   ecdsaKeystore: ""
   ecdsaKeystorePassword: ""
