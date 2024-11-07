@@ -35,6 +35,7 @@ env:
   COINGECKO_IDS: "merlin-s-seal-btc,bitcoin-trc20,bouncebit-btc,bouncebit-usd,solv-btc,wrapped-bitcoin,tether,usd-coin,ethereum,stakestone-ether,pufeth,manta-network,arbitrum,ethena-usde"
   COINGECKO_SYMBOLS: "m-btc,btct,bbtc,bbusd,SolvBTC,wbtc,usdt,usdc,eth,STONEUSD,pufEUSD,manta,arb,usde"
   COINGECKO_CURRENCIES: "usd,usd,usd,usd,usd,usd,usd,usd,usd,usd,usd,usd,usd,usd"
+  BINANCE_WS_URL: wss://stream.binance.us:9443/stream
   
 secrets:
   blsKey: ""
