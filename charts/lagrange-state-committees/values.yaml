@@ -29,7 +29,7 @@ serviceMonitor:
 image:
   repository: lagrangelabs/lagrange-node
   pullPolicy: IfNotPresent
-  tag: "v1.0.0"
+  tag: "v1.2.0"
 
 prometheusPort: 8080
 
