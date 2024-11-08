@@ -36,7 +36,7 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data
-        {{- toYaml .Values.initContainers.initSrs | nindent 8 }}
+        {{- toYaml .Values.initContainers.initSrs | nindent 10 }}
         {{- if .Values.initContainers.updateSocket.enabled }}
         - name: update-socket
           image: {{ .Values.initContainers.updateSocket.image.repository }}:{{ .Values.initContainers.updateSocket.image.tag }}
