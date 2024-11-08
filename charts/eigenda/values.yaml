@@ -136,7 +136,7 @@ initContainers:
     image:
       repository: ghcr.io/layr-labs/eigenda/opr-nodeplugin
       pullPolicy: Always
-      tag: "0.8.0"
+      tag: "0.8.5"
 
 # Node configuration
 node:
@@ -145,7 +145,7 @@ node:
   image:
     repository: ghcr.io/layr-labs/eigenda/opr-node
     pullPolicy: Always
-    tag: "0.8.0"
+    tag: "0.8.5"
   securityContext: {}
   resources:
     limits:
