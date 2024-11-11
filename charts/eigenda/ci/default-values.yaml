@@ -19,9 +19,7 @@ node:
     - name: NODE_SRS_LOAD
       value: "3000"
   startupProbe:
-    initialDelaySeconds: 20
-  readinessProbe:
-    initialDelaySeconds: 40
+    initialDelaySeconds: 20   # reduce initial delay for faster test
 
 proxy:
   resources:
@@ -38,8 +36,6 @@ serviceMonitor:
 network: holesky
 
 ethRpcUrl: "https://ethereum-holesky-rpc.publicnode.com"
-
-nodeHostname: "localhost"
 
 persistence:
   size: 10Gi
