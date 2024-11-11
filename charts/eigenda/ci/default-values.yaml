@@ -22,6 +22,9 @@ proxy:
       cpu: 500m
       memory: 500Mi
 
+serviceMonitor:
+  enabled: false
+
 network: holesky
 
 ethRpcUrl: "https://ethereum-holesky-rpc.publicnode.com"
