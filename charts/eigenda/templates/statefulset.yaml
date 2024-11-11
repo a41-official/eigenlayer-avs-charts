@@ -107,24 +107,24 @@ spec:
             timeoutSeconds: 30
             failureThreshold: 5
             httpGet:
-              path: /metrics
-              port: {{ .Values.metricsPort }}
+              path: /eigen/node/health
+              port: {{ .Values.internalApiPort }}
           readinessProbe:
             initialDelaySeconds: 20
             periodSeconds: 3
             timeoutSeconds: 5
             failureThreshold: 5
             httpGet:
-              path: /metrics
-              port: {{ .Values.metricsPort }}
+              path: /eigen/node/health
+              port: {{ .Values.internalApiPort }}
           livenessProbe:
             initialDelaySeconds: 20
             periodSeconds: 3
             timeoutSeconds: 5
             failureThreshold: 5
             httpGet:
-              path: /metrics
-              port: {{ .Values.metricsPort }}
+              path: /eigen/node/health
+              port: {{ .Values.internalApiPort }}
           resources:
             {{- toYaml .Values.node.resources | nindent 12 }}
           volumeMounts:
