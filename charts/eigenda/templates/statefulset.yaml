@@ -104,21 +104,21 @@ spec:
           startupProbe:
             httpGet:
               path: /eigen/node/health
-              port: {{ .Values.internalApiPort }}
+              port: {{ .Values.apiPort }}
             {{- with .Values.node.startupProbe }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
           readinessProbe:
             httpGet:
               path: /eigen/node/health
-              port: {{ .Values.internalApiPort }}
+              port: {{ .Values.apiPort }}
             {{- with .Values.node.readinessProbe }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
           livenessProbe:
             httpGet:
               path: /eigen/node/health
-              port: {{ .Values.internalApiPort }}
+              port: {{ .Values.apiPort }}
             {{- with .Values.node.livenessProbe }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
