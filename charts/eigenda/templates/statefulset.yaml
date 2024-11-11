@@ -94,6 +94,9 @@ spec:
           - containerPort: {{ .Values.internalRetrievalPort }}
             protocol: TCP
             name: int-retrieval
+          - containerPort: {{ .Values.internalApiPort }}
+            protocol: TCP
+            name: int-api
           - containerPort: {{ .Values.metricsPort }}
             protocol: TCP
             name: metrics
@@ -104,21 +107,21 @@ spec:
           startupProbe:
             httpGet:
               path: /eigen/node/health
-              port: {{ .Values.apiPort }}
+              port: {{ .Values.internalApiPort }}
             {{- with .Values.node.startupProbe }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
           readinessProbe:
             httpGet:
               path: /eigen/node/health
-              port: {{ .Values.apiPort }}
+              port: {{ .Values.internalApiPort }}
             {{- with .Values.node.readinessProbe }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
           livenessProbe:
             httpGet:
               path: /eigen/node/health
-              port: {{ .Values.apiPort }}
+              port: {{ .Values.internalApiPort }}
             {{- with .Values.node.livenessProbe }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -171,7 +174,7 @@ spec:
           - containerPort: {{ .Values.retrievalPort }}
             protocol: TCP
             name: retrieval
-          - containerPort: {{ .Values.internalApiPort }}
+          - containerPort: {{ .Values.apiPort }}
             protocol: TCP
             name: api
           {{- if .Values.proxy.lifecycleHooks }}
