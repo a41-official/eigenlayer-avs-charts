@@ -32,7 +32,7 @@ spec:
         {{- include "eigenda.selectorLabels" . | nindent 8 }}
     spec:
       initContainers:
-        - name: initSrs
+        - name: init-srs
           volumeMounts:
             - name: data
               mountPath: /data
