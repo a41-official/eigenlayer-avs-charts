@@ -13,6 +13,11 @@ node:
     requests:
       cpu: 500m
       memory: 1Gi
+  env:
+    - name: NODE_SRS_ORDER
+      value: "3000"
+    - name: NODE_SRS_LOAD
+      value: "3000"
 proxy:
   resources:
     limits:
