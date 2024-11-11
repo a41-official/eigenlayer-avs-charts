@@ -39,7 +39,7 @@ ethRpcUrl: "https://ethereum-holesky-rpc.publicnode.com"
 
 persistence:
   size: 10Gi
-  storageClassName: ""  # use default storage class
+  storageClassName: "standard"  # use default storage class
 
 initContainers:
   updateSocket:
