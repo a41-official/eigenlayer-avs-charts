@@ -18,6 +18,9 @@ node:
       value: "3000"
     - name: NODE_SRS_LOAD
       value: "3000"
+  startupProbe:
+    initialDelaySeconds: 20
+
 proxy:
   resources:
     limits:

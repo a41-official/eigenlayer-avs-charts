@@ -102,29 +102,26 @@ spec:
           {{- toYaml .Values.node.lifecycleHooks | nindent 12 }}
           {{- end }}
           startupProbe:
-            initialDelaySeconds: 60
-            periodSeconds: 3
-            timeoutSeconds: 30
-            failureThreshold: 5
             httpGet:
               path: /eigen/node/health
               port: {{ .Values.internalApiPort }}
+            {{- with .Values.node.startupProbe }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           readinessProbe:
-            initialDelaySeconds: 20
-            periodSeconds: 3
-            timeoutSeconds: 5
-            failureThreshold: 5
             httpGet:
               path: /eigen/node/health
               port: {{ .Values.internalApiPort }}
+            {{- with .Values.node.readinessProbe }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           livenessProbe:
-            initialDelaySeconds: 20
-            periodSeconds: 3
-            timeoutSeconds: 5
-            failureThreshold: 5
             httpGet:
               path: /eigen/node/health
               port: {{ .Values.internalApiPort }}
+            {{- with .Values.node.livenessProbe }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           resources:
             {{- toYaml .Values.node.resources | nindent 12 }}
           volumeMounts:

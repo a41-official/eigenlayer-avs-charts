@@ -172,6 +172,21 @@ node:
     requests:
       cpu: 800m
       memory: 1Gi
+  startupProbe:
+    initialDelaySeconds: 60
+    periodSeconds: 3
+    timeoutSeconds: 30
+    failureThreshold: 5
+  readinessProbe:
+    initialDelaySeconds: 20
+    periodSeconds: 3
+    timeoutSeconds: 5
+    failureThreshold: 5
+  livenessProbe:
+    initialDelaySeconds: 20
+    periodSeconds: 3
+    timeoutSeconds: 5
+    failureThreshold: 5
   env: []
 
 # Proxy configuration
