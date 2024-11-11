@@ -1,0 +1,51 @@
+# Test using Arbitrum Mainnet config
+
+# Github Action Runner resource limits: https://docs.github.com/ko/actions/writing-workflows/choosing-where-your-workflow-runs/choosing-the-runner-for-a-job#standard-github-hosted-runners-for--private-repositories
+# CPU: 2-core, Memory: 7 GB, Disk: 14 GB
+# Kube System Uses: 950m CPU, 290Mi Memory
+# Available for Helm Test: 1050m CPU, 6.71Gi Memory
+
+resources:
+  limits:
+    cpu: 1
+    memory: 2Gi
+  requests:
+    cpu: 1
+    memory: 2Gi
+
+serviceMonitor:
+  enabled: false
+
+clientConfig: |
+  [Client]
+  GrpcURLs = "44.208.119.151:9090"
+  Chain = "arbitrum"
+  EthereumURL = "https://ethereum-rpc.publicnode.com"
+  OperatorAddress = "0x4a4e4685Cc83EbF31bd06AaC605a61EC324432d5"  # Random address
+  CommitteeSCAddress = "0xECc22f3EcD0EFC8aD77A78ad9469eFbc44E746F5"
+  BLSKeystorePath = "/app/config/keystore/bls.key"
+  BLSKeystorePasswordPath = "/app/config/keystore/bls.pass"
+  SignerECDSAKeystorePath = "/app/config/keystore/signer.key"
+  SignerECDSAKeystorePasswordPath = "/app/config/keystore/signer.pass"
+  PullInterval = "1000ms"
+  BLSCurve = "BN254"
+
+  [RpcClient]
+  [RpcClient.Arbitrum]
+  RPCURL = "https://arbitrum-one-rpc.publicnode.com"
+  L1RPCURL = "https://ethereum-rpc.publicnode.com"
+  BeaconURL = "https://ethereum-beacon-api.publicnode.com"
+  BatchInbox = "0x1c479675ad559DC151F6Ec7ed3FbF8ceE79582B6"
+  ConcurrentFetchers = 8
+
+  [Telemetry]
+  MetricsEnabled = true
+  MetricsServerPort = "8080"
+  ServiceName = "lagrange-node-arbitrum"
+  PrometheusRetentionTime = "600s"
+
+secrets:
+  blsKey: "dummy-bls-keystore"
+  blsKeyPassword: "dummy-bls-password"
+  signerKey: "dummy-ecdsa-keystore"
+  signerKeyPassword: "dummy-ecdsa-password"
