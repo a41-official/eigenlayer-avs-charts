@@ -45,6 +45,9 @@ persistence:
   size: 10Gi
   storageClassName: "standard"  # use default storage class
 
+service:
+  type: ClusterIP
+
 initContainers:
   updateSocket:
     enabled: false
