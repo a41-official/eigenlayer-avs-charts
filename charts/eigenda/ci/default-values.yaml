@@ -37,6 +37,8 @@ network: holesky
 
 ethRpcUrl: "https://ethereum-holesky-rpc.publicnode.com"
 
+nodeHostname: "localhost"
+
 persistence:
   size: 10Gi
   storageClassName: "standard"  # use default storage class
