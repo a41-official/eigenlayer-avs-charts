@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-proxy-config
+  name: {{ include "eigenda.fullname" . }}-proxy-config
 data:
   rate-limit-nginx.conf: |-
     limit_req_zone $binary_remote_addr zone=ip:10m rate=${REQUEST_LIMIT};
@@ -31,7 +31,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-proxy-env
+  name: {{ include "eigenda.fullname" . }}-proxy-env
 data:
   REQUEST_LIMIT: "10r/s"
   BURST_LIMIT: "50"
@@ -44,7 +44,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-node-env
+  name: {{ include "eigenda.fullname" . }}-node-env
 data:
   # These are used for testing purpose
   NODE_TEST_PRIVATE_BLS: ""
