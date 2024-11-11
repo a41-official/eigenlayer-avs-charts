@@ -97,7 +97,7 @@ spec:
           - containerPort: {{ .Values.metricsPort }}
             protocol: TCP
             name: metrics
-          {{- if .Values.lifecycleHooks }}
+          {{- if .Values.node.lifecycleHooks }}
           lifecycle:
           {{- toYaml .Values.node.lifecycleHooks | nindent 12 }}
           {{- end }}
@@ -174,7 +174,7 @@ spec:
           - containerPort: {{ .Values.internalApiPort }}
             protocol: TCP
             name: api
-          {{- if .Values.lifecycleHooks }}
+          {{- if .Values.proxy.lifecycleHooks }}
           lifecycle:
           {{- toYaml .Values.proxy.lifecycleHooks | nindent 12 }}
           {{- end }}
