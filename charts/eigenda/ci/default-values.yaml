@@ -20,6 +20,8 @@ node:
       value: "3000"
   startupProbe:
     initialDelaySeconds: 20
+  readinessProbe:
+    initialDelaySeconds: 40
 
 proxy:
   resources:
