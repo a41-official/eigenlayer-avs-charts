@@ -1,0 +1,11 @@
+apiVersion: v2
+version: 0.1.0
+type: application
+name: zenrock
+description: zenrock helm charts
+sources:
+  - https://github.com/zenrocklabs/zenrock-validators
+home: https://www.zenrocklabs.io/
+maintainers:
+  - name: A41 Tech
+    email: dev@a41.io
