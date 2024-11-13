@@ -40,8 +40,6 @@ spec:
       restartPolicy: Always
       {{- if .Values.serviceAccount.name }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
-      {{- else }}
-      serviceAccountName: {{ include "zenrock.fullname" . }}
       {{- end }}
       initContainers:
       - name: init-zenrock
