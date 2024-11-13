@@ -81,8 +81,8 @@ images:
 # Sidecar enables AVS
 sidecar:
   enabled: false
-  version: "1.1.1"
-  releases_url: "https://github.com/zenrocklabs/zrchain/releases/download"
+  version: "1.2.3"
+  releases_url: "https://releases.gardia.zenrocklabs.io"
   env:
     SIDECAR_CONFIG_FILE: "/root-data/sidecar/config.yaml"
   # Read config from a secret, the subpath should be named `config.yaml`
