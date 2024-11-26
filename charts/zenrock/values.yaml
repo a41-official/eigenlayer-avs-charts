@@ -75,7 +75,7 @@ images:
 sidecar:
   enabled: false
   version: "1.2.3"
-  releases_url: "https://releases.gardia.zenrocklabs.io"
+  releases_url: "https://github.com/zenrocklabs/zrchain/releases/download"
   env:
     SIDECAR_CONFIG_FILE: "/root-data/sidecar/config.yaml"
   # Read config from a secret, the subpath should be named `config.yaml`
