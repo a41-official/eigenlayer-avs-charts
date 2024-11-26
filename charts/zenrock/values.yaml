@@ -79,7 +79,7 @@ sidecar:
   env:
     SIDECAR_CONFIG_FILE: "/root-data/sidecar/config.yaml"
   # Read config from a secret, the subpath should be named `config.yaml`
-  configFromSecret: "zenrock-sidecar-config"
+  configFromSecret: ""
   # If configFromSecret is set `config` is ignored
   config: |
     grpc_port: 9191
