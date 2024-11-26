@@ -781,7 +781,7 @@ data:
     if ! [ -f "/root-data/sidecar/bin/{{ .Values.sidecar.version }}" ]; then
       cd /root-data/sidecar/bin/
       rm -rf *
-      wget -q {{ .Values.sidecar.releases_url }}/validator_sidecar-{{ .Values.sidecar.version }} -O validator_sidecar
+      curl -Ls {{ .Values.sidecar.releases_url }}/v{{ .Values.sidecar.version }}/validator_sidecar -o validator_sidecar
       chmod +x validator_sidecar
       touch {{ .Values.sidecar.version }}
     fi
