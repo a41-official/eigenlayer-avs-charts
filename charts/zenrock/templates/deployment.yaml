@@ -7,6 +7,7 @@ metadata:
     {{- include "zenrock.labels" . | nindent 4 }}
   annotations:
     configmap.reloader.stakater.com/reload: "{{ include "zenrock.fullname" . }}"
+    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
   {{- with .Values.deploymentAnnotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
