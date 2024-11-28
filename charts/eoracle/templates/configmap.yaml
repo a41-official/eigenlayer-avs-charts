@@ -9,7 +9,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 data:
-  vmagent.yaml: |
+  vmagent.yml: |
     global:
       scrape_interval: {{ .Values.vmagent.scrapeInterval }}
       
