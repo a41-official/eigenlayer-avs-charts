@@ -16,16 +16,23 @@ spec:
       interval: {{ .Values.serviceMonitor.interval }}
       scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
       honorLabels: true
-      {{- with .Values.serviceMonitor.tlsConfig }}
-      tlsConfig:
-        {{- . | nindent 8 }}
-      {{- end }}
       relabelings:
       {{- range $key, $value := .Values.commonLabels }}
       - action: replace
         targetLabel: {{ $key | trimPrefix "a41.io/" | quote }}
         replacement: {{ $value | quote }}
       {{- end }}
+    - port: vmagent
+      path: {{ .Values.serviceMonitor.path }}
+      interval: {{ .Values.serviceMonitor.interval }}
+      scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+      honorLabels: true
+      relabelings:
+      {{- range $key, $value := .Values.commonLabels }}
+      - action: replace
+        targetLabel: {{ $key | trimPrefix "a41.io/" | quote }}
+        replacement: {{ $value | quote }}
+      {{- end }}      
   jobLabel: {{ .Release.Name }}
   selector:
     matchLabels:
