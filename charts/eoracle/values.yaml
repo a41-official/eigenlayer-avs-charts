@@ -75,7 +75,9 @@ podSecurityContext: {}
 #   runAsGroup: 65534
 
 
-service: {}
+service:
+  type: ClusterIP
+
 resources: {}
 
 livenessProbe:
@@ -96,3 +98,16 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+## VM Agent
+vmagent:
+  image:
+    repository: victoriametrics/vmagent
+    pullPolicy: IfNotPresent
+    tag: "vmagent"
+
+  containerPort: 8429  
+  scrapeInterval: 15s
+
+operatorAddress: ""
+  
