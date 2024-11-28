@@ -50,9 +50,9 @@ spec:
               mountPath: /keystore/ecdsaAliasedEncryptedWallet.json
               subPath: keystore.json
       containers:
-        - name: {{ .Chart.Name }}
+        - name: data-validator
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- toYaml .Values.podSecurityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
@@ -79,6 +79,21 @@ spec:
           volumeMounts:
             - name: keystore
               mountPath: /app/{{ .Values.env.EO_KEYSTORE_PATH }}
+        - name: vmagent
+          securityContext:
+            {{- toYaml .Values.podSecurityContext | nindent 12 }}
+          image: "{{ .Values.vmagent.image.repository }}:{{ .Values.vmagent.image.tag }}"
+          imagePullPolicy: {{ .Values.vmagent.image.pullPolicy }}
+          command:
+            - "--promscrape.config=/etc/vmagent/vmagent.yml"
+            - "--remoteWrite.url=https://metrics.eoracle.io/api/v1/write"
+          ports:
+            - name: vmagent
+              containerPort: {{ .Values.vmagent.containerPort }}
+          volumeMounts:
+            - name: vmagent-config
+              mountPath: /etc/vmagent/vmagent.yml
+              subPath: vmagent.yml
       volumes:
         - name: keystore
           emptyDir: {}
@@ -88,6 +103,9 @@ spec:
         - name: ecdsa-aliased-key
           secret:
             secretName: {{ .Values.secrets.ecdsaAliasedKey }}
+        - name: vmagent-config
+          configMap:
+            name: {{ include "eoracle.fullname" . }}-vmagent-config 
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -100,3 +118,4 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+

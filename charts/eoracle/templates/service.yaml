@@ -15,5 +15,10 @@ spec:
       targetPort: health
       protocol: TCP
       name: health
+    - port: {{ .Values.vmagent.containerPort }}
+      targetPort: vmagent
+      protocol: TCP
+      name: vmagent
   selector:
     {{- include "eoracle.selectorLabels" . | nindent 4 }}
+    
