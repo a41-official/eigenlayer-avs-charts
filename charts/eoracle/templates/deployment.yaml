@@ -84,11 +84,9 @@ spec:
             {{- toYaml .Values.podSecurityContext | nindent 12 }}
           image: "{{ .Values.vmagent.image.repository }}:{{ .Values.vmagent.image.tag }}"
           imagePullPolicy: {{ .Values.vmagent.image.pullPolicy }}
-          command:
-            - sh
-            - -c          
-            - --promscrape.config=/etc/vmagent/vmagent.yml
-            - --remoteWrite.url=https://metrics.eoracle.io/api/v1/write     
+          args:
+            - "--promscrape.config=/etc/vmagent/vmagent.yml"
+            - "--remoteWrite.url=https://metrics.eoracle.io/api/v1/write"
           ports:
             - name: vmagent
               containerPort: {{ .Values.vmagent.containerPort }}
