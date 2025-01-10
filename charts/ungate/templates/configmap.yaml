@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ungate.name" . }}-attester-env
+data:
+  OPERATOR_ADDRESS: {{ .Values.config.eigenLayerOperatorAddress }}
+  TASK_PERFORMER: {{ .Values.config.taskPerformer }}
+  AVS_GOVERNANCE_ADDRESS: 0xB3e069FD6dDA251AcBDE09eDa547e0AB207016ee
+  ATTESTATION_CENTER_ADDRESS: 0x43042F34e8F9B093AD579f4aEc9915476408586E
+  OTHENTIC_BOOTSTRAP_ID: 12D3KooWBNFG1QjuF3UKAKvqhdXcxh9iBmj88cM5eU2EK5Pa91KB
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ungate.name" . }}-webapi-env
+data:
+  IPFS_HOST: https://gateway.lighthouse.storage/ipfs/

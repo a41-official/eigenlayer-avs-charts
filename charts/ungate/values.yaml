@@ -1,0 +1,200 @@
+# Default values for ungate.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## Provide a name in place of for `app` labels
+##
+nameOverride: ""
+
+## Provide a name to substitute for the full names of resources
+##
+fullnameOverride: ""
+
+## Common labels
+##
+commonLabels: {}
+
+## Annotations
+##
+annotations: {}
+
+## Number of replicas
+##
+replicas: 1
+
+## Node selector for pods
+##
+nodeSelector: {}
+
+## Affinity configuration for pods
+##
+affinity: {}
+
+## Tolerations for pods
+##
+tolerations: []
+
+## Security context for pods
+##
+securityContext: {}
+
+## Image pull secrets for docker images
+##
+imagePullSecrets: []
+
+## Deploy of attester
+##
+attester:
+  ## Image of attester
+  ##
+  image:
+    ## Attester container image repository
+    ##
+    repository: a41ventures/ungate-attester
+    
+    ## Attester container image tag
+    ##
+    tag: latest
+
+    ## Attester container pull policy
+    ## 
+    pullPolicy: IfNotPresent
+  
+  ## Security context for containers
+  ##
+  containerSecurityContext: {}
+
+  ## Liveness probe for attester
+  ##
+  livenessProbe:
+    httpGet:
+      port: 6060
+      path: /metrics
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    timeoutSeconds: 3
+    failureThreshold: 2
+    successThreshold: 1
+
+  ## Readiness probe for attester
+  ##
+  readinessProbe:
+    httpGet:
+      port: 6060
+      path: /metrics
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    timeoutSeconds: 3
+    failureThreshold: 2
+    successThreshold: 1
+
+  ## Resource for attester
+  ##
+  resources:
+    ## Resource limits for attester
+    ##
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    
+    ## Resource requests for attester
+    ##
+    requests:
+      cpu: 100m
+      memory: 100Mi
+
+  ## Metrics port for webapi
+  ##  
+  metricsPort: 6060
+
+## Deploy of webapi
+##
+webapi:
+  ## Image of webapi
+  ##
+  image:
+    ## Webapi container image repository
+    ##
+    repository: a41ventures/ungate-webapi
+
+    ## Webapi container image tag
+    ##
+    tag: latest
+
+    ## Webapi container pull policy
+    ## 
+    pullPolicy: IfNotPresent
+
+  ## Security context for containers
+  ##
+  containerSecurityContext: {}
+
+  ## Liveness probe for webapi
+  ##
+  livenessProbe:
+    tcpSocket:
+      port: 4002
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    timeoutSeconds: 3
+    failureThreshold: 2
+    successThreshold: 1
+
+  ## Readiness probe for webapi
+  ##
+  readinessProbe:
+    tcpSocket:
+      port: 4002
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    timeoutSeconds: 3
+    failureThreshold: 2
+    successThreshold: 1
+
+  ## Resource for webapi
+  ##
+  resources:
+    ## Resource limits for webapi
+    ##
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    
+    ## Resource requests for webapi
+    ##
+    requests:
+      cpu: 100m
+      memory: 100Mi
+  
+  ## API port for webapi
+  ##
+  apiPort: 4002
+
+## Service account to use
+##
+serviceAccount:
+  ## Specifies whether a service account should be created
+  ##
+  create: false
+
+  ## Specifies whether a service account will be automounted
+  ##
+  automount: false
+
+  ## Name of the service account to use
+  ##
+  name: ""
+
+## Configuration for ungate
+##
+config:
+  eigenLayerOperatorAddress: 0x0000000000000000000000000000000000000000
+  taskPerformer: 0x0000000000000000000000000000000000000000
+
+## Sealed secrets for ungate
+##
+sealedSecrets:
+  enabled: true
+  attesterPrivateKey:
+    name: ungate-attester-private-key
+    value: ""
