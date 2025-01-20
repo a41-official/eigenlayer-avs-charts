@@ -4,6 +4,5 @@
 .vscode
 .DS_Store
 secret*
-sealedSecret*
 *.secret
 mycert.pem

@@ -1,0 +1,28 @@
+# Test using mainnet config
+
+# Github Action Runner resource limits: https://docs.github.com/ko/actions/writing-workflows/choosing-where-your-workflow-runs/choosing-the-runner-for-a-job#standard-github-hosted-runners-for--private-repositories
+# CPU: 2-core, Memory: 7 GB, Disk: 14 GB
+# Kube System Uses: 950m CPU, 290Mi Memory
+# Available for Helm Test: 1050m CPU, 6.71Gi Memory
+
+imagePullSecrets:
+  - name: dockerhub-secret
+
+serviceMonitor:
+  enabled: false
+
+config:
+  eigenLayerOperatorAddress: 0xa83e07353a9ed2af88e7281a2fa7719c01356d8e
+  taskPerformer: 0x0000000000000000000000000000000000000000
+  avsGovernanceAddress: 0xB3e069FD6dDA251AcBDE09eDa547e0AB207016ee
+  attestationCenterAddress: 0x43042F34e8F9B093AD579f4aEc9915476408586E
+  othenticBootstrapIp: 198.13.35.119
+  othenticBootstrapPort: 9876
+  othenticBootstrapId: 12D3KooWBNFG1QjuF3UKAKvqhdXcxh9iBmj88cM5eU2EK5Pa91KB
+  ipfsHost: https://gateway.lighthouse.storage/ipfs/
+
+sealedSecrets:
+  enabled: false
+
+secrets:
+  attesterPrivateKey: dummy-ecdsa-private-key

@@ -1,0 +1,251 @@
+# Default values for ungate.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## Provide a name in place of for `app` labels
+##
+nameOverride: ""
+
+## Provide a name to substitute for the full names of resources
+##
+fullnameOverride: ""
+
+## Common labels
+##
+commonLabels: {}
+
+## Annotations
+##
+annotations: {}
+
+## Number of replicas
+##
+replicas: 1
+
+## Node selector for pods
+##
+nodeSelector: {}
+
+## Affinity configuration for pods
+##
+affinity: {}
+
+## Tolerations for pods
+##
+tolerations: []
+
+## Security context for pods
+##
+securityContext: {}
+
+## Image pull secrets for docker images
+##
+imagePullSecrets: []
+
+## Deploy of attester
+##
+attester:
+  ## Image of attester
+  ##
+  image:
+    ## Attester container image repository
+    ##
+    repository: a41ventures/ungate-attester
+    
+    ## Attester container image tag
+    ##
+    tag: latest
+
+    ## Attester container pull policy
+    ## 
+    pullPolicy: IfNotPresent
+  
+  ## Security context for containers
+  ##
+  containerSecurityContext: {}
+
+  ## Liveness probe for attester
+  ##
+  livenessProbe:
+    httpGet:
+      port: 6060
+      path: /metrics
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    timeoutSeconds: 3
+    failureThreshold: 2
+    successThreshold: 1
+
+  ## Readiness probe for attester
+  ##
+  readinessProbe:
+    httpGet:
+      port: 6060
+      path: /metrics
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    timeoutSeconds: 3
+    failureThreshold: 2
+    successThreshold: 1
+
+  ## Resource for attester
+  ##
+  resources:
+    ## Resource limits for attester
+    ##
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    
+    ## Resource requests for attester
+    ##
+    requests:
+      cpu: 500m
+      memory: 1Gi
+
+  ## Metrics port for webapi
+  ##  
+  metricsPort: 6060
+
+## Deploy of webapi
+##
+webapi:
+  ## Image of webapi
+  ##
+  image:
+    ## Webapi container image repository
+    ##
+    repository: a41ventures/ungate-webapi
+
+    ## Webapi container image tag
+    ##
+    tag: latest
+
+    ## Webapi container pull policy
+    ## 
+    pullPolicy: IfNotPresent
+
+  ## Security context for containers
+  ##
+  containerSecurityContext: {}
+
+  ## Liveness probe for webapi
+  ##
+  livenessProbe:
+    tcpSocket:
+      port: 4002
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    timeoutSeconds: 3
+    failureThreshold: 2
+    successThreshold: 1
+
+  ## Readiness probe for webapi
+  ##
+  readinessProbe:
+    tcpSocket:
+      port: 4002
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    timeoutSeconds: 3
+    failureThreshold: 2
+    successThreshold: 1
+
+  ## Resource for webapi
+  ##
+  resources:
+    ## Resource limits for webapi
+    ##
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    
+    ## Resource requests for webapi
+    ##
+    requests:
+      cpu: 500m
+      memory: 1Gi
+  
+  ## API port for webapi
+  ##
+  apiPort: 4002
+
+## Service account to use
+##
+serviceAccount:
+  ## Specifies whether a service account should be created
+  ##
+  create: false
+
+  ## Specifies whether a service account will be automounted
+  ##
+  automount: false
+
+  ## Name of the service account to use
+  ##
+  name: ""
+
+## Service for ungate 
+##
+service:
+  ## Specifies which service type is
+  ##
+  type: ClusterIP
+  
+  ## Specifies which port is used for metrics
+  ##
+  metricsPort: 6060
+
+  ## Specifies which port is used for api
+  ##
+  apiPort: 4002
+
+## Service monitor for ungate
+##
+serviceMonitor:
+  ## Specifies whether a service monitor should be created
+  ##
+  enabled: true
+
+  ## Specifies where the metrics are collected
+  ##
+  path: /metrics
+
+  ## The interval for scraping metrics
+  ##
+  interval: 1m
+
+  ## The timeout for scaping
+  ##
+  scrapeTimeout: 30s
+
+  ## Configuration for TLS when scraping
+  ##
+  tlsConfig: {}
+
+## Configuration for ungate
+##
+config:
+  eigenLayerOperatorAddress: 0x0000000000000000000000000000000000000000
+  taskPerformer: 0x0000000000000000000000000000000000000000
+  avsGovernanceAddress: 0x1b8Ad2aB0Fa5585804Ce9E9E2C6097f0328bb05C
+  attestationCenterAddress: 0xc2103bAD84F195a202B69AC7B2c6d1eBfeB73228
+  othenticBootstrapIp: 104.238.148.107
+  othenticBootstrapPort: 9876
+  othenticBootstrapId: 12D3KooWBNFG1QjuF3UKAKvqhdXcxh9iBmj88cM5eU2EK5Pa91KB
+  ipfsHost: https://gateway.lighthouse.storage/ipfs/
+
+## Sealed secrets for ungate
+## Mutually exclusive to secrets field, sealedSecrets field is prioritized
+##
+sealedSecrets:
+  enabled: true
+  attesterPrivateKey:
+    name: ungate-attester-private-key
+    value: ""
+
+## Secrets for ungate
+## Mutually exclusive to sealedSecrets field, it is actually used for testing
+##
+secrets:
+  attesterPrivateKey: ""

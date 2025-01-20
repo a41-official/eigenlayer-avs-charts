@@ -1,0 +1,118 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ungate.fullname" . }}
+  labels:
+    {{- include "ungate.labels" . | nindent 4 }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  strategy:
+    type: Recreate
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      {{- include "ungate.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ungate.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- with .Values.annotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      automountServiceAccountToken: {{ .Values.serviceAccount.automount }}
+      serviceAccountName: {{ include "ungate.serviceAccountName" . }}
+      {{- with .Values.securityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ include "ungate.name" . }}-attester
+          image: "{{ .Values.attester.image.repository }}:{{ .Values.attester.image.tag }}"
+          imagePullPolicy: {{ .Values.attester.image.pullPolicy }}
+          {{- with .Values.attester.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          livenessProbe:
+            {{- toYaml .Values.attester.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.attester.readinessProbe | nindent 12 }}
+          resources:
+            limits:
+              cpu: {{ .Values.attester.resources.limits.cpu }}
+              memory: {{ .Values.attester.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.attester.resources.requests.cpu }}
+              memory: {{ .Values.attester.resources.requests.memory }}
+          args: [
+            "node", "attester", "/ip4/{{ .Values.config.othenticBootstrapIp }}/tcp/{{ .Values.config.othenticBootstrapPort }}/p2p/{{ .Values.config.othenticBootstrapId }}",
+            "--avs-webapi", "http://webapi",
+            "--l1-chain", "mainnet",
+            "--l2-chain", "base",
+            "--metrics",
+            "--metrics.port", "{{ .Values.attester.metricsPort }}",
+          ]
+          envFrom:
+            - configMapRef:
+                name: {{ include "ungate.name" . }}-attester-env
+          env:
+            - name: PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  {{- if .Values.sealedSecrets.enabled }}
+                  name: {{ .Values.sealedSecrets.attesterPrivateKey.name }}
+                  {{- else }}
+                  name: {{ .Values.secrets.attesterPrivateKey }}
+                  {{- end }}
+                  key: privateKey
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.attester.metricsPort }}
+              protocol: TCP
+        - name: {{ include "ungate.name" . }}-webapi
+          image: "{{ .Values.webapi.image.repository }}:{{ .Values.webapi.image.tag }}"
+          imagePullPolicy: {{ .Values.webapi.image.pullPolicy }}
+          {{- with .Values.webapi.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          livenessProbe:
+            {{- toYaml .Values.webapi.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.webapi.readinessProbe | nindent 12 }}
+          resources:
+            limits:
+              cpu: {{ .Values.webapi.resources.limits.cpu }}
+              memory: {{ .Values.webapi.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.webapi.resources.requests.cpu }}
+              memory: {{ .Values.webapi.resources.requests.memory }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "ungate.name" . }}-webapi-env
+          ports:
+            - name: api
+              containerPort: {{ .Values.webapi.apiPort }}
+              protocol: TCP

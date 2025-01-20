@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ungate.fullname" . }}
+  labels:
+    {{- include "ungate.labels" . | nindent 4 }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.metricsPort }}
+      targetPort: {{ .Values.attester.metricsPort }}
+      protocol: TCP
+      name: metrics
+    - port: {{ .Values.service.apiPort }}
+      targetPort: {{ .Values.webapi.apiPort }}
+      protocol: TCP
+      name: api
+  selector:
+    {{- include "ungate.selectorLabels" . | nindent 4 }}

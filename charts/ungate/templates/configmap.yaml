@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ungate.name" . }}-attester-env
+data:
+  OPERATOR_ADDRESS: "{{ .Values.config.eigenLayerOperatorAddress }}"
+  TASK_PERFORMER: "{{ .Values.config.taskPerformer }}"
+  AVS_GOVERNANCE_ADDRESS: "{{ .Values.config.avsGovernanceAddress }}"
+  ATTESTATION_CENTER_ADDRESS: "{{ .Values.config.attestationCenterAddress }}"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ungate.name" . }}-webapi-env
+data:
+  IPFS_HOST: "{{ .Values.config.ipfsHost }}"
