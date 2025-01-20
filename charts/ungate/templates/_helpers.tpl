@@ -15,6 +15,10 @@
 {{- end -}}
 {{- end -}}
 
+{{- define "ungate.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
 {{- define "ungate.labels" -}}
 helm.sh/chart: {{ include "ungate.chart" . }}
 {{ if .Values.commonLabels -}}
