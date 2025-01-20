@@ -51,8 +51,10 @@ spec:
         - name: {{ include "ungate.name" . }}-attester
           image: "{{ .Values.attester.image.repository }}:{{ .Values.attester.image.tag }}"
           imagePullPolicy: {{ .Values.attester.image.pullPolicy }}
+          {{- with .Values.attester.containerSecurityContext }}
           securityContext:
-            {{- toYaml .Values.attester.containerSecurityContext | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           livenessProbe:
             {{- toYaml .Values.attester.livenessProbe | nindent 12 }}
           readinessProbe:
@@ -92,8 +94,10 @@ spec:
         - name: {{ include "ungate.name" . }}-webapi
           image: "{{ .Values.webapi.image.repository }}:{{ .Values.webapi.image.tag }}"
           imagePullPolicy: {{ .Values.webapi.image.pullPolicy }}
+          {{- with .Values.webapi.containerSecurityContext }}
           securityContext:
-            {{- toYaml .Values.webapi.containerSecurityContext | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           livenessProbe:
             {{- toYaml .Values.webapi.livenessProbe | nindent 12 }}
           readinessProbe:
