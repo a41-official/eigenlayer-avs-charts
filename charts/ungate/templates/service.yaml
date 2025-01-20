@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ include "ungate.fullname" . }}
   labels:
-    {{ include "ungate.labels" . | nindent 4 }}
+    {{- include "ungate.labels" . | nindent 4 }}
   {{- with .Values.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
