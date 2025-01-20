@@ -67,7 +67,7 @@ spec:
               cpu: {{ .Values.attester.resources.requests.cpu }}
               memory: {{ .Values.attester.resources.requests.memory }}
           args: [
-            "node", "attester", "/ip4/${OTHENTIC_BOOTSTRAP_IP}/tcp/${OTHENTIC_BOOTSTRAP_PORT}/p2p/${OTHENTIC_BOOTSTRAP_ID}",
+            "node", "attester", "/ip4/{{ .Values.config.othenticBootstrapIp }}/tcp/{{ .Values.config.othenticBootstrapPort }}/p2p/{{ .Values.config.othenticBootstrapId }}",
             "--avs-webapi", "http://webapi",
             "--l1-chain", "mainnet",
             "--l2-chain", "base",
@@ -78,7 +78,7 @@ spec:
             - configMapRef:
                 name: {{ include "ungate.name" . }}-attester-env
           env:
-            - name: PRIVATE_KEY_ATTESTER
+            - name: PRIVATE_KEY
               valueFrom:
                 secretKeyRef:
                   {{- if .Values.sealedSecrets.enabled }}

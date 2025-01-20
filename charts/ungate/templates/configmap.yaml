@@ -7,9 +7,6 @@ data:
   TASK_PERFORMER: "{{ .Values.config.taskPerformer }}"
   AVS_GOVERNANCE_ADDRESS: "{{ .Values.config.avsGovernanceAddress }}"
   ATTESTATION_CENTER_ADDRESS: "{{ .Values.config.attestationCenterAddress }}"
-  OTHENTIC_BOOTSTRAP_IP: "{{ .Values.config.othenticBootstrapIp }}"
-  OTHENTIC_BOOTSTRAP_PORT: "{{ .Values.config.othenticBootstrapPort }}"
-  OTHENTIC_BOOTSTRAP_ID: "{{ .Values.config.othenticBootstrapId }}"
 ---
 apiVersion: v1
 kind: ConfigMap

@@ -94,14 +94,14 @@ attester:
     ## Resource limits for attester
     ##
     limits:
-      cpu: 100m
-      memory: 100Mi
+      cpu: 500m
+      memory: 1Gi
     
     ## Resource requests for attester
     ##
     requests:
-      cpu: 100m
-      memory: 100Mi
+      cpu: 500m
+      memory: 1Gi
 
   ## Metrics port for webapi
   ##  
@@ -157,14 +157,14 @@ webapi:
     ## Resource limits for webapi
     ##
     limits:
-      cpu: 100m
-      memory: 100Mi
+      cpu: 500m
+      memory: 1Gi
     
     ## Resource requests for webapi
     ##
     requests:
-      cpu: 100m
-      memory: 100Mi
+      cpu: 500m
+      memory: 1Gi
   
   ## API port for webapi
   ##
