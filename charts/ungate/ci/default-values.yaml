@@ -8,6 +8,9 @@
 imagePullSecrets:
   - name: dockerhub-secret
 
+serviceMonitor:
+  enabled: false
+
 config:
   eigenLayerOperatorAddress: 0x73bf91bb1327415ec7b9d436bfced67c3ee843fa
 

@@ -185,6 +185,44 @@ serviceAccount:
   ##
   name: ""
 
+## Service for ungate 
+##
+service:
+  ## Specifies which service type is
+  ##
+  type: ClusterIP
+  
+  ## Specifies which port is used for metrics
+  ##
+  metricsPort: 6060
+
+  ## Specifies which port is used for api
+  ##
+  apiPort: 4002
+
+## Service monitor for ungate
+##
+serviceMonitor:
+  ## Specifies whether a service monitor should be created
+  ##
+  enabled: true
+
+  ## Specifies where the metrics are collected
+  ##
+  path: /metrics
+
+  ## The interval for scraping metrics
+  ##
+  interval: 1m
+
+  ## The timeout for scaping
+  ##
+  scrapeTimeout: 30s
+
+  ## Configuration for TLS when scraping
+  ##
+  tlsConfig: {}
+
 ## Configuration for ungate
 ##
 config:
