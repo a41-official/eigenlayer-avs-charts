@@ -65,7 +65,7 @@ spec:
               cpu: {{ .Values.attester.resources.requests.cpu }}
               memory: {{ .Values.attester.resources.requests.memory }}
           args: [
-            "node", "attester", "/ip4/198.13.35.119/tcp/9876/p2p/${OTHENTIC_BOOTSTRAP_ID}",
+            "node", "attester", "/ip4/${OTHENTIC_BOOTSTRAP_IP}/tcp/${OTHENTIC_BOOTSTRAP_PORT}/p2p/${OTHENTIC_BOOTSTRAP_ID}",
             "--avs-webapi", "http://webapi",
             "--l1-chain", "mainnet",
             "--l2-chain", "base",
@@ -79,7 +79,11 @@ spec:
             - name: PRIVATE_KEY_ATTESTER
               valueFrom:
                 secretKeyRef:
+                  {{- if .Values.sealedSecrets.enabled }}
                   name: {{ .Values.sealedSecrets.attesterPrivateKey.name }}
+                  {{- else }}
+                  name: {{ .Values.secrets.attesterPrivateKey }}
+                  {{- end }}
                   key: privateKey
           ports:
             - name: metrics

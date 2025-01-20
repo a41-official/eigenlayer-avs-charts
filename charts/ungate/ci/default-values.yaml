@@ -1,0 +1,18 @@
+# Test using Holesky config
+
+# Github Action Runner resource limits: https://docs.github.com/ko/actions/writing-workflows/choosing-where-your-workflow-runs/choosing-the-runner-for-a-job#standard-github-hosted-runners-for--private-repositories
+# CPU: 2-core, Memory: 7 GB, Disk: 14 GB
+# Kube System Uses: 950m CPU, 290Mi Memory
+# Available for Helm Test: 1050m CPU, 6.71Gi Memory
+
+imagePullSecrets:
+  - name: dockerhub-secret
+
+config:
+  eigenLayerOperatorAddress: 0x73bf91bb1327415ec7b9d436bfced67c3ee843fa
+
+sealedSecrets:
+  enabled: false
+
+secrets:
+  attesterPrivateKey: dummy-ecdsa-private-key
