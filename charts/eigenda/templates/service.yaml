@@ -23,5 +23,13 @@ spec:
       port: {{ .Values.dispersalPort }}
       protocol: TCP
       targetPort: dispersal
+    - name: v2-retrieval
+      port: {{ .Values.v2RetrievalPort }}
+      protocol: TCP
+      targetPort: v2-retrieval
+    - name: v2-dispersal
+      port: {{ .Values.v2DispersalPort }}
+      protocol: TCP
+      targetPort: v2-dispersal
   selector:
     {{- include "eigenda.selectorLabels" . | nindent 4 }}
