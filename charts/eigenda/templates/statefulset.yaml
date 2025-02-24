@@ -94,6 +94,9 @@ spec:
           - containerPort: {{ .Values.internalRetrievalPort }}
             protocol: TCP
             name: int-retrieval
+          - containerPort: {{ .Values.internalV2RetrievalPort }}
+            protocol: TCP
+            name: int-v2-retrieval
           - containerPort: {{ .Values.internalApiPort }}
             protocol: TCP
             name: int-api
@@ -174,6 +177,9 @@ spec:
           - containerPort: {{ .Values.retrievalPort }}
             protocol: TCP
             name: retrieval
+          - containerPort: {{ .Values.v2RetrievalPort }}
+            protocol: TCP
+            name: v2-retrieval
           - containerPort: {{ .Values.apiPort }}
             protocol: TCP
             name: api
