@@ -75,7 +75,7 @@ data:
 
   # This is a dummy value for now. This won't be used as we are explicitly asking for quorum while opting in/out
   # In future release, this will be removed
-  NODE_QUORUM_ID_LIST: {{ .Values.quorumIdList }}
+  NODE_QUORUM_ID_LIST: {{ .Values.quorumIdList | quote }}
 
   NODE_VERBOSE: "true"
   NODE_RETRIEVAL_PORT: {{ .Values.retrievalPort | quote }}
