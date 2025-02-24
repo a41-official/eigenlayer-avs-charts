@@ -96,7 +96,7 @@ spec:
             name: int-retrieval
           - containerPort: {{ .Values.internalV2RetrievalPort }}
             protocol: TCP
-            name: int-v2-retrieval
+            name: int-v2-rtrvl
           - containerPort: {{ .Values.internalApiPort }}
             protocol: TCP
             name: int-api
