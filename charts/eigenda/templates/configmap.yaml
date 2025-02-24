@@ -79,7 +79,7 @@ data:
 
   NODE_VERBOSE: "true"
   NODE_RETRIEVAL_PORT: {{ .Values.retrievalPort | quote }}
-  NODE_V2_RETRIEVAL_PORT: {{ .Values.v2RetrievalPort | quote }}
+  NODE_V2_RETRIEVAL_PORT: {{ .Values.internalV2RetrievalPort | quote }}
   NODE_TIMEOUT: 20s
   NODE_SRS_ORDER: "268435456"
   NODE_SRS_LOAD: "8388608"
