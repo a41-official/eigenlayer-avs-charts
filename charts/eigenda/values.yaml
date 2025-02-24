@@ -58,14 +58,19 @@ persistence:
   # Read more (https://github.com/rancher/local-path-provisioner)
   storageClassName: "local-path"
 
+runtimeMode: "v1-and-v2"
+
 # -- Internal Retrieval Port
 internalRetrievalPort: 32003
+internalV2RetrievalPort: 32008
 
 # -- Retrieval Port
 retrievalPort: 32004
+v2RetrievalPort: 32007
 
 # -- Dispersal Port
 dispersalPort: 32005
+v2DispersalPort: 32006
 
 # -- Node Internal API Port
 internalApiPort: 9090
@@ -127,7 +132,7 @@ nodeHostname: ""
 # EigenDA quorum id list
 # This is a dummy value for now. This won't be used as we are explicitly asking for quorum while opting in/out
 # In future release, this will be removed
-quorumIdList: "0,1"
+quorumIdList: "0"
 
 # Initcontainer configuration
 initContainers:
@@ -154,7 +159,7 @@ initContainers:
     image:
       repository: ghcr.io/layr-labs/eigenda/opr-nodeplugin
       pullPolicy: Always
-      tag: "0.8.5"
+      tag: "0.9.0-rc.0"
 
 # Node configuration
 node:
@@ -163,7 +168,7 @@ node:
   image:
     repository: ghcr.io/layr-labs/eigenda/opr-node
     pullPolicy: Always
-    tag: "0.8.5"
+    tag: "0.9.0-rc.0"
   securityContext: {}
   resources:
     limits:

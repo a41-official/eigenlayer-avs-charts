@@ -17,6 +17,17 @@ data:
         }
     }
     server {
+        listen ${NODE_V2_RETRIEVAL_PORT};
+        client_max_body_size 1M;
+        http2 on;
+        location / {
+            limit_req zone=ip burst=${BURST_LIMIT} nodelay;
+            limit_req_status 429;
+            grpc_set_header X-Real-IP $remote_addr;
+            grpc_pass grpc://${NODE_HOST}:${NODE_INTERNAL_V2_RETRIEVAL_PORT};
+        }
+    }
+    server {
         listen ${NODE_API_PORT};
         client_max_body_size 1M;
         http2 on;
@@ -39,7 +50,9 @@ data:
   NODE_API_PORT: {{ .Values.apiPort | quote }}
   NODE_INTERNAL_API_PORT: {{ .Values.internalApiPort | quote }}
   NODE_RETRIEVAL_PORT: {{ .Values.retrievalPort | quote }}
+  NODE_V2_RETRIEVAL_PORT: {{ .Values.v2RetrievalPort | quote }}
   NODE_INTERNAL_RETRIEVAL_PORT: {{ .Values.internalRetrievalPort | quote }}
+  NODE_INTERNAL_V2_RETRIEVAL_PORT: {{ .Values.internalV2RetrievalPort | quote }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -55,6 +68,10 @@ data:
   NODE_CACHE_ENCODED_BLOBS: "true"
   NODE_NUM_WORKERS: "1"
   NODE_DISPERSAL_PORT: {{ .Values.dispersalPort | quote }}
+  NODE_V2_DISPERSAL_PORT: {{ .Values.v2DispersalPort | quote }}
+
+  # This flag defines a runtime mode. Acceptable inputs are v1-only, v2-only, v1-and-v2
+  NODE_RUNTIME_MODE: "v1-and-v2"
 
   # This is a dummy value for now. This won't be used as we are explicitly asking for quorum while opting in/out
   # In future release, this will be removed
@@ -62,6 +79,7 @@ data:
 
   NODE_VERBOSE: "true"
   NODE_RETRIEVAL_PORT: {{ .Values.retrievalPort | quote }}
+  NODE_V2_RETRIEVAL_PORT: {{ .Values.v2RetrievalPort | quote }}
   NODE_TIMEOUT: 20s
   NODE_SRS_ORDER: "268435456"
   NODE_SRS_LOAD: "8388608"
@@ -71,6 +89,8 @@ data:
   # $NODE_DISPERSAL_PORT port on the chain and listen for the reverse proxy at $NODE_INTERNAL_DISPERSAL_PORT.
   NODE_INTERNAL_DISPERSAL_PORT: {{ .Values.dispersalPort | quote }}
   NODE_INTERNAL_RETRIEVAL_PORT: {{ .Values.internalRetrievalPort | quote }}
+  NODE_INTERNAL_V2_DISPERSAL_PORT: {{ .Values.v2DispersalPort | quote }}
+  NODE_INTERNAL_V2_RETRIEVAL_PORT: {{ .Values.internalV2RetrievalPort | quote }}
 
   # Reachability Check
   NODE_REACHABILITY_POLL_INTERVAL: "60"

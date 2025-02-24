@@ -56,7 +56,7 @@ spec:
             - name: NODE_OPERATION
               value: "update-socket"
             - name: NODE_SOCKET
-              value: "$(NODE_HOSTNAME):$(NODE_DISPERSAL_PORT);$(NODE_RETRIEVAL_PORT)"
+              value: "$(NODE_HOSTNAME):$(NODE_DISPERSAL_PORT);$(NODE_RETRIEVAL_PORT);$(NODE_V2_DISPERSAL_PORT);$(NODE_V2_RETRIEVAL_PORT)"
             - name: NODE_BLS_KEY_PASSWORD
               valueFrom:
                 secretKeyRef:
