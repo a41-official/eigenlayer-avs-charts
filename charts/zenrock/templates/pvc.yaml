@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ printf "%s-data" (include "zenrock.fullname" .) }}
+  labels:
+    {{- include "zenrock.labels" . | nindent 4 }}
 spec:
   accessModes:
     - ReadWriteOnce
