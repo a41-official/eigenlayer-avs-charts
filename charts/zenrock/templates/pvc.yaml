@@ -13,7 +13,4 @@ spec:
     requests:
       storage: {{ .Values.zenrock.persistence.size }}
   storageClassName: {{ .Values.zenrock.persistence.storageClass }}
-  selector:
-    matchLabels:
-      {{- include "zenrock.selectorLabels" . | nindent 6 }}
 {{- end }}
