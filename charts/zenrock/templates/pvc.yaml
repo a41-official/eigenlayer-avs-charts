@@ -14,5 +14,6 @@ spec:
       storage: {{ .Values.zenrock.persistence.size }}
   storageClassName: {{ .Values.zenrock.persistence.storageClass }}
   selector:
-    {{- include "zenrock.selectorLabels" . | nindent 4 }}
+    matchLabels:
+      {{- include "zenrock.selectorLabels" . | nindent 6 }}
 {{- end }}
