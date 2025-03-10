@@ -137,10 +137,12 @@ serviceMonitor:
 
 ## Secrets for watchtower
 ##
-secrets:
-  ## Secret name for watchtower key
+secretRefs:
+  ## Secret ref for watchtower key
   ##
-  watchtowerKey: ""
+  watchtowerKey:
+    name: ""
+    key: key
 
 ## Watchtower client configuration
 ## https://docs.witnesschain.com/infinity-watch/proof-of-location-mainnet/run-a-watchtower/eigenlayer-operators/running-a-pol-watchtower#id-2.-setting-up-the-watchtower

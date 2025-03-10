@@ -61,8 +61,7 @@ spec:
             - name: privateKey
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secrets.watchtowerKey }}
-                  key: key
+                {{- toYaml .Values.secretRefs.watchtowerKey | nindent 18 }}
           {{- range $key, $value := .Values.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
