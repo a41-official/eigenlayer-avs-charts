@@ -20,7 +20,9 @@ image:
   tag: 1.0.2
 
 secrets:
-  watchtowerKey: "dummy-ecdsa-private-key"
+  watchtowerKey:
+    name: "dummy-ecdsa-private-key"
+    key: "privateKey"
 
 env:
   walletPublicKey: "0xcd3c95f4a56da66fde37d119d7746f43e806856f" # dummy
