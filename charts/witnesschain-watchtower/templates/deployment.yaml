@@ -20,7 +20,6 @@ spec:
       labels:
         {{- include "witnesschain-watchtower.selectorLabels" . | nindent 8 }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       {{- with .Values.annotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -46,22 +45,6 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      initContainers:
-        - name: init-client-config
-          image: apteno/alpine-jq:latest
-          command:
-            - sh
-            - -c
-            - |
-              key=$(cat /app/secret/key) &&
-              jq --arg key "$key" ". + {private_key: \$key}" /app/config/config-without-key.json > /watchtower/src/client/config.json
-          volumeMounts:
-            - name: init-config
-              mountPath: /app/config
-            - name: init-secret
-              mountPath: /app/secret
-            - name: client-config
-              mountPath: /watchtower/src/client
       containers:
         - name: {{ include "witnesschain-watchtower.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -71,6 +54,9 @@ spec:
           ports:
             - name: metrics
               containerPort: {{ .Values.metricsPort }}
+            {{ range $port := .Values.service.ports }}
+            - containerPort: {{ $port }}
+            {{- end }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
@@ -78,23 +64,12 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-          {{- with .Values.extraEnv }}
-            {{- toYaml . | nindent 12 }}
+            - name: privateKey
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.watchtowerKey }}
+                  key: key
+          {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
           {{- end }}
-          volumeMounts:
-            - name: client-config
-              mountPath: /watchtower/src/client/config.json
-              subPath: config.json
-              readOnly: true
-          {{- with .Values.extraVolumeMounts }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-      volumes:
-        - name: init-config
-          configMap:
-            name: {{ include "witnesschain-watchtower.fullname" . }}
-        - name: init-secret
-          secret:
-            secretName: {{ .Values.secretNames.watchtowerKey }}
-        - name: client-config
-          emptyDir: {}
