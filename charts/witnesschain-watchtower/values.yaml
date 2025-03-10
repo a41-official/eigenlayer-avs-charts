@@ -73,27 +73,9 @@ image:
   ##
   pullPolicy: IfNotPresent
 
-## Liveness probe
-##
-livenessProbe:
-  httpGet:
-    port: metrics
-    path: /metrics
-  initialDelaySeconds: 60
-  periodSeconds: 120
-
-## Readiness probe
-##
-readinessProbe:
-  httpGet:
-    port: metrics
-    path: /metrics
-  initialDelaySeconds: 30
-  periodSeconds: 10
-
 ## Metrics Port
 ##
-metricsPort: 9090
+metricsPort: 9090 # not working
 
 ## Service configuration
 ##
@@ -139,7 +121,7 @@ serviceAccount:
 serviceMonitor:
   ## If true, create a serviceMonitor
   ##
-  enabled: true
+  enabled: false
 
   ## Path to scrape
   ##
