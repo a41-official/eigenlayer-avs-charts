@@ -63,7 +63,7 @@ imagePullSecrets: []
 image:
   ## Watchtower container image repository
   ##
-  repository: witnesschain/watchtower
+  repository: witnesschain/infinity-watch
 
   ## Watchtower container iamge tag
   ##
@@ -110,9 +110,18 @@ service:
   ##
   externalTrafficPolicy: Cluster
 
-  ## Service port
+  ## Service ports
   ##
-  port: 9090
+  ports:
+    - 11112
+    - 22223
+    - 33334
+    - 33335
+    - 33336
+    - 44445
+    - 44446
+    - 44447
+    - 55556
 
 ## Service account to use
 ##
@@ -144,58 +153,22 @@ serviceMonitor:
   ##
   scrapeTimeout: 30s
 
-## Additional env variables
-##
-extraEnv: []
-
-## Additional volume mounts
-##
-extraVolumeMounts: []
-
 ## Secrets for watchtower
 ##
-secretNames:
+secrets:
   ## Secret name for watchtower key
   ##
   watchtowerKey: ""
 
 ## Watchtower client configuration
-##
-clientConfig:
-  json: |-
-    {
-      "host_name": "my-watchtower.my-domain.com",
-      "watchtower_failure_alert_url": "https://my-failure-alert/url",
-      "eth_testnet_websocket_url": "wss://my-L1-node",
-      "proof_submission_chain_url": "wss://blue-orangutan-rpc.eu-north-2.gateway.fm/ws",
-      "currently_watching_l1": "eth_testnet",
-      "eth_testnet_chain_id": 11155111,
-      "proof_submission_chain_id": 1237146866,
-      "currently_watching_l2": "base",
-      "witnesschain_coordinator_url": "https://api.witnesschain.com",
-      "l2": {
-        "op_super_chains": [
-          {
-            "chain_name": "base",
-            "chain_id": 84532,
-            "op_geth_websocket_url": "ws://node.witnesschain.com:8547",
-            "op_geth_rpc_url": "http://node.witnesschain.com:8548",
-            "op_node_rpc_url": "http://node.witnesschain.com:9546",
-            "l2oo_address": "0x84457ca9D0163FbC4bbfe4Dfbb20ba46e48DF254"
-          },
-          {
-            "chain_name": "optimism",
-            "chain_id": 11155420,
-            "op_geth_websocket_url": "ws://100.25.2.15:8546",
-            "op_geth_rpc_url": "http://100.25.2.15:8545",
-            "op_node_rpc_url": "http://100.25.2.15:9545",
-            "l2oo_address": "0x90E9c4f8a994a250F6aEfd61CAFb4F2e895D458F"
-          }
-        ]
-      },
-      "alert_manager_address": "0xF9696529cB591E0EA9f08BBB5908Ae4a342a1F14",
-      "diligence_proof_manager_address": "0x7AB3b14F3177935d4539d80289906633615393F2",
-      "operator_registry": "0x26710e60A36Ace8A44e1C3D7B33dc8B80eAb6cb7",
-      "receipt_timeout": 300,
-      "watchtower_retries": 5
-    }
+## https://docs.witnesschain.com/infinity-watch/proof-of-location-mainnet/run-a-watchtower/eigenlayer-operators/running-a-pol-watchtower#id-2.-setting-up-the-watchtower
+env:
+  #latitude: 37.01511676489697
+  #longitude: -79.0392271449855
+  radius: 1000
+  keyType: ethereum
+  saveResultsInDatabase: false
+  submitResultsToContract: false
+  rpcUrl: https://rpc.witnesschain.com
+  projectName: "eigenlayer-A41"
+  walletPublicKey: "<operator_public_address>"

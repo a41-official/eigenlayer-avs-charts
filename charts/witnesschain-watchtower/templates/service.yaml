@@ -17,8 +17,10 @@ spec:
   externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}
   {{- end }}
   ports:
-    - name: metrics
-      port: {{ .Values.service.port }}
-      targetPort: metrics
+    {{- range $port := .Values.service.ports }}
+    - name: port-{{ $port }}
+      port: {{ $port }}
+      targetPort: {{ $port }}
+    {{- end }}
   selector:
     {{- include "witnesschain-watchtower.selectorLabels" . | nindent 4 }}

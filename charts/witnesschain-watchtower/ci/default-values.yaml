@@ -1,0 +1,27 @@
+# Test using Holesky + mock srs config
+
+# Github Action Runner resource limits: https://docs.github.com/ko/actions/writing-workflows/choosing-where-your-workflow-runs/choosing-the-runner-for-a-job#standard-github-hosted-runners-for--private-repositories
+# CPU: 2-core, Memory: 7 GB, Disk: 14 GB
+# Kube System Uses: 950m CPU, 290Mi Memory
+# Available for Helm Test: 1050m CPU, 6.71Gi Memory
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
+
+serviceMonitor:
+  enabled: false
+
+image:
+  tag: 1.0.2
+
+secrets:
+  watchtowerKey: "dummy-ecdsa-private-key"
+
+env:
+  walletPublicKey: "0xcd3c95f4a56da66fde37d119d7746f43e806856f" # dummy
+  rpcUrl: "https://blue-orangutan-rpc.eu-north-2.gateway.fm/" # holesky
