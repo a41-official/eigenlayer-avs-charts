@@ -19,7 +19,7 @@ serviceMonitor:
 image:
   tag: 1.0.2
 
-secrets:
+secretRefs:
   watchtowerKey:
     name: "dummy-ecdsa-private-key"
     key: "privateKey"
