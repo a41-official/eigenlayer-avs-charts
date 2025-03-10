@@ -66,3 +66,16 @@ spec:
             - name: {{ $key }}
               value: {{ $value | quote }}
           {{- end }}
+          volumeMounts:
+          - name: logs
+            mountPath: "/app/logs"
+        - name: log-sidecar
+          image: busybox:1.34.0
+          imagePullPolicy: IfNotPresent
+          args: ["/bin/sh", "-c", "tail -f /app/logs/pol/watchtower.log"]
+          volumeMounts:
+          - name: logs
+            mountPath: "/app/logs"
+      volumes:
+        - name: logs
+          emptyDir: {}
