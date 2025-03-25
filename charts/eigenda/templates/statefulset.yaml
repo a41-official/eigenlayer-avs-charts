@@ -56,7 +56,7 @@ spec:
             - name: NODE_OPERATION
               value: "update-socket"
             - name: NODE_SOCKET
-              value: "$(NODE_HOSTNAME):$(NODE_DISPERSAL_PORT);$(NODE_RETRIEVAL_PORT);$(NODE_V2_DISPERSAL_PORT);$(NODE_V2_RETRIEVAL_PORT)"
+              value: "$(NODE_HOSTNAME):{{ .Values.dispersalPort }};{{ .Values.retrievalPort }};{{ .Values.v2DispersalPort }};{{ .Values.v2RetrievalPort }}"
             - name: NODE_BLS_KEY_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -91,6 +91,9 @@ spec:
           - containerPort: {{ .Values.dispersalPort }}
             protocol: TCP
             name: dispersal
+          - containerPort: {{ .Values.v2DispersalPort }}
+            protocol: TCP
+            name: v2-dispersal
           - containerPort: {{ .Values.internalRetrievalPort }}
             protocol: TCP
             name: int-retrieval
