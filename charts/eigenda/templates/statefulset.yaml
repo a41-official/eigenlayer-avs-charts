@@ -94,15 +94,6 @@ spec:
           - containerPort: {{ .Values.v2DispersalPort }}
             protocol: TCP
             name: v2-dispersal
-          - containerPort: {{ .Values.internalRetrievalPort }}
-            protocol: TCP
-            name: int-retrieval
-          - containerPort: {{ .Values.internalV2RetrievalPort }}
-            protocol: TCP
-            name: int-v2-rtrvl
-          - containerPort: {{ .Values.internalApiPort }}
-            protocol: TCP
-            name: int-api
           - containerPort: {{ .Values.metricsPort }}
             protocol: TCP
             name: metrics
