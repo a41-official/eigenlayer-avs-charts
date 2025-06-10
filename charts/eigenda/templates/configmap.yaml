@@ -106,6 +106,7 @@ data:
   NODE_CACHE_PATH: /data/cache
   NODE_LOG_PATH: /data/logs/opr.log
   NODE_DB_PATH: /data/operator/db
+  NODE_LITT_DB_STORAGE_PATHS: /data/operator/db_v2
 
   # Node logs configs
   NODE_VERBOSE: "true"
