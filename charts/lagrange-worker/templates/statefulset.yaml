@@ -57,7 +57,7 @@ spec:
               subPath: lagr_keystore.json
             - name: zkmr-params
               mountPath: /zkmr_params
-          command: ["worker", "--config", "/config/worker-conf.toml"]
+          command: [ "/bin/sh", "-c", "ulimit -s unlimited && worker --json --config /config/worker-conf.toml" ]
           resources:
             limits:
               cpu: {{ .Values.resources.limits.cpu }}
